@@ -1,0 +1,17 @@
+[user]
+	email = james@jsrn.net
+	name = jsrn
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = code --wait
+[commit]
+  verbose = true
+	template = ~/.gitmessage
+[alias]
+	recent = branch --sort=-committerdate
+[push]
+	default = current
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main
