@@ -51,6 +51,8 @@ map("n", "<F5>", ":NvimTreeToggle<cr>")
 map("n", "<C-p>", ":Telescope find_files<cr>")
 map("n", "<F6>", "<Plug>(lcn-menu)")
 
+vim.wo.number = true
+
 -- syntax on
 -- colorscheme monokai
 
