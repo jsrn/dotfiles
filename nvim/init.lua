@@ -14,8 +14,8 @@ Plug('nvim-telescope/telescope.nvim', { tag = '0.1.2' })
 Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate'})
 
 Plug('autozimu/LanguageClient-neovim', { branch = 'next', ['do'] = 'bash install.sh' })
-
-Plug('tanvirtin/monokai.nvim')
+Plug('catppuccin/nvim', { as = 'catppuccin' })
+-- Plug('tanvirtin/monokai.nvim')
 vim.call('plug#end')
 
 -- empty setup using defaults
@@ -53,6 +53,7 @@ map("n", "<F6>", "<Plug>(lcn-menu)")
 
 vim.wo.number = true
 
--- syntax on
--- colorscheme monokai
-
+require("catppuccin").setup({
+  flavour = "frappe"
+});
+vim.cmd.colorscheme "catppuccin"
