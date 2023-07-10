@@ -12,7 +12,7 @@ Plug('nvim-tree/nvim-tree.lua')
 Plug('nvim-lua/plenary.nvim')
 Plug('nvim-telescope/telescope.nvim', { tag = '0.1.2' })
 Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate'})
-
+Plug('folke/which-key.nvim')
 Plug('autozimu/LanguageClient-neovim', { branch = 'next', ['do'] = 'bash install.sh' })
 Plug('catppuccin/nvim', { as = 'catppuccin' })
 vim.call('plug#end')
@@ -57,4 +57,7 @@ require("catppuccin").setup({
   flavour = "frappe"
 });
 vim.cmd.colorscheme "catppuccin"
+
+-- which-key
+require("which-key").setup({})
 
