@@ -17,10 +17,6 @@ Plug('autozimu/LanguageClient-neovim', { branch = 'next', ['do'] = 'bash install
 Plug('catppuccin/nvim', { as = 'catppuccin' })
 vim.call('plug#end')
 
--- empty setup using defaults
-require("nvim-tree").setup()
-
--- OR setup with some options
 require("nvim-tree").setup({
   sort_by = "case_sensitive",
   view = {
@@ -61,3 +57,6 @@ vim.cmd.colorscheme "catppuccin"
 -- which-key
 require("which-key").setup({})
 
+-- other options
+vim.wo.colorcolumn = '80'
+vim.opt.cursorline = true
