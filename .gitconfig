@@ -10,6 +10,7 @@
 	template = ~/.gitmessage
 [alias]
 	recent = branch --sort=-committerdate
+	dm = "!f() { git diff $(git merge-base --fork-point master); }; f"
 [push]
 	default = current
 [pull]
