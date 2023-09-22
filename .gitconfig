@@ -1,11 +1,12 @@
-[user]
-	email = james@jsrn.net
-	name = jsrn
+[includeIf "gitdir:~/code/"]
+	path = .gitconfig-work
+[includeIf "gitdir:~/code-personal/"]
+	path = .gitconfig-personal
 [core]
 	excludesfile = ~/.gitignore_global
 	editor = code --wait
 [commit]
-  verbose = true
+	verbose = true
 	template = ~/.gitmessage
 [alias]
 	recent = branch --sort=-committerdate
