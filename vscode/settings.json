@@ -1,5 +1,8 @@
 {
     "workbench.colorTheme": "Witch Hazel",
     "editor.fontSize": 16,
-    "markdown.preview.fontSize": 18
+    "markdown.preview.fontSize": 18,
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.cursorStyle": "block",
+    "editor.cursorBlinking": "phase"
 }
