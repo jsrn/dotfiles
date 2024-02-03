@@ -35,12 +35,18 @@ alias gl='git log --pretty=reference --no-merges'
 alias git-latest-tag="git tag --list | tac | head -1"
 
 # OTHER
-alias blog='cd ~/code-personal/jsrn.github.io && bundle exec jekyll serve --drafts --future'
+alias blog='cd ~/code-personal/jsrn.github.io && subl . && open http://127.0.0.1:4000 && bundle exec jekyll serve --drafts --future'
 
 function valec() {
     pbpaste > /tmp/valeclip
     vale --no-wrap --config /Users/jsrn/.vale.ini /tmp/valeclip
     rm /tmp/valeclip
+}
+
+# Open man pages in a nice little window.
+# h/t https://collindonnell.com/my-xman-function
+function xman() {
+  open x-man-page://$1
 }
 
 export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
