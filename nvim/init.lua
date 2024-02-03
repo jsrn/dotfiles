@@ -11,9 +11,9 @@ vim.call('plug#begin', '~/.local/share/nvim/site/plugged')
 Plug('nvim-tree/nvim-tree.lua')
 Plug('nvim-lua/plenary.nvim')
 Plug('nvim-telescope/telescope.nvim', { tag = '0.1.2' })
-Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate'})
+-- Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate'})
 Plug('folke/which-key.nvim')
-Plug('autozimu/LanguageClient-neovim', { branch = 'next', ['do'] = 'bash install.sh' })
+-- Plug('autozimu/LanguageClient-neovim', { branch = 'next', ['do'] = 'bash install.sh' })
 Plug('catppuccin/nvim', { as = 'catppuccin' })
 vim.call('plug#end')
 
@@ -39,7 +39,7 @@ function map(mode, lhs, rhs, opts)
 end
 
 -- initialise LSP
-vim.cmd('source ~/.config/nvim/lsp.vim')
+-- vim.cmd('source ~/.config/nvim/lsp.vim')
 
 -- set up my keybinds
 map("n", "<F5>", ":NvimTreeToggle<cr>")
