@@ -31,7 +31,7 @@ alias hosts="cat ~/.ssh/config | grep 'Host ' -A 1 | sed 's/    Hostname/Hostnam
 alias gcane='git commit --amend --no-edit'
 alias gclean='CURR=`git branch --show-current --no-color`;git branch --merged | egrep -v "(^\*|$CURR)" | xargs git branch -d'
 alias pickaxe="git log -p -S"
-alias gl='git log --pretty=reference --no-merges'
+alias gl='git log --no-merges'
 alias git-latest-tag="git tag --list | tac | head -1"
 
 # OTHER
