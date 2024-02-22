@@ -1,19 +1,19 @@
 [includeIf "gitdir:~/code/"]
-	path = .gitconfig-work
+  path = .gitconfig-work
 [includeIf "gitdir:~/code-personal/"]
-	path = .gitconfig-personal
+  path = .gitconfig-personal
 [core]
-	excludesfile = ~/.gitignore_global
-	editor = code --wait
-[commit]
-	verbose = true
-	template = ~/.gitmessage
-[alias]
-	recent = branch --sort=-committerdate
-	dm = "!f() { git diff $(git merge-base --fork-point master); }; f"
+  excludesfile = ~/.gitignore_global
 [push]
-	default = current
-[pull]
-	rebase = false
+  autoSetupRemote = true
 [init]
-	defaultBranch = main
+  defaultBranch = main
+[branch]
+  sort = -committerdate
+[pretty]
+  nicelog = format:%C(yellow)%h%Creset %C(auto)%d%Creset %C(white)%s%Creset %C(dim white)%an (%as)%Creset
+[alias]
+  dm = "!f() { git diff $(git merge-base --fork-point master); }; f"
+  changed-files = diff --name-only master
+[format]
+  pretty = nicelog
