@@ -1,0 +1,6 @@
+extends: existence
+message: "You say 'Well,' too much."
+nonword: true
+level: warning
+tokens:
+  - Well,

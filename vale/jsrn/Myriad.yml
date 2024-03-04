@@ -1,0 +1,6 @@
+extends: existence
+message: "It's just 'myriad.'"
+ignorecase: true
+level: error
+tokens:
+  - a myriad of

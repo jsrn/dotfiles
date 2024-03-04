@@ -1,0 +1,6 @@
+extends: existence
+message: "It's GitLab, not %s."
+level: error
+tokens:
+  - 'gitlab'
+  - 'Gitlab'
