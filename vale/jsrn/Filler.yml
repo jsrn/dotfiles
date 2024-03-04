@@ -1,0 +1,7 @@
+extends: existence
+message: "Filler words."
+level: warning
+ignorecase: true
+tokens:
+  - so
+  - also
