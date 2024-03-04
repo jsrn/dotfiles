@@ -36,7 +36,7 @@ alias git-latest-tag="git tag --list | tac | head -1"
 
 # OTHER
 alias blog='cd ~/code-personal/jsrn.github.io && subl . && open http://127.0.0.1:4000 && bundle exec jekyll serve --drafts --future'
-alias write='code --profile Writing ~/Desktop/scrap.md'
+alias write='code --profile Writing'
 
 function valec() {
     pbpaste > /tmp/valeclip
