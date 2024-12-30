@@ -4,5 +4,6 @@
     "markdown.preview.fontSize": 18,
     "editor.cursorSmoothCaretAnimation": "on",
     "editor.cursorStyle": "block",
-    "editor.cursorBlinking": "phase"
+    "editor.cursorBlinking": "phase",
+    "editor.wordWrapColumn": 72
 }
