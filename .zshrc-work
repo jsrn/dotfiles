@@ -1,5 +1,4 @@
 export GITLAB_DEV_TOKEN=$(cat ~/.glpat-dev)
-export DOCKER_HOST='unix:///Users/jsrn/.local/share/containers/podman/machine/qemu/podman.sock'
 export KUBE_EDITOR='code --wait'
 
 alias prep='bundle install && bundle exec rails db:migrate RAILS_ENV=development'
@@ -28,3 +27,36 @@ source /Users/jsrn/.asdf/asdf.sh
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/jsrn/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+function review() {
+  curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/$1.diff" | git apply
+}
+
+function prodpat() {
+  security find-generic-password -w -s 'GL Prod PAT' -a 'jnutt'
+}
+
+function stagingpat() {
+  security find-generic-password -w -s 'GL Staging PAT' -a 'jnutt'
+}
+
+function undomigration() {
+  bin/rails db:migrate:down:main VERSION=$1
+  bin/rails db:migrate:down:ci VERSION=$1
+}
+
+function redomigration() {
+  bin/rails db:migrate:down:main VERSION=$1
+  bin/rails db:migrate:down:ci VERSION=$1
+
+  bin/rails db:migrate:up:main VERSION=$1
+  bin/rails db:migrate:up:ci VERSION=$1
+}
+
+function statham() {
+  ruby -e "puts '$*'.chars.map{|c| c.match(/[A-Za-z]/) ? \":statham-#{c}:\" : c }.join" | pbcopy
+}
+
+function quickprof() {
+  watch -n 0.1 ps -p $1 -o %cpu,%mem,rss
+}

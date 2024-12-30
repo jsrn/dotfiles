@@ -3,6 +3,8 @@
 
 export ZSH="/Users/jsrn/.oh-my-zsh"
 
+zstyle ':omz:update' mode auto
+
 ZSH_THEME="robbyrussell"
 
 # Uncomment the following line if pasting URLs and other text is messed up.
@@ -33,11 +35,13 @@ alias gclean='CURR=`git branch --show-current --no-color`;git branch --merged | 
 alias pickaxe="git log -p -S"
 alias gl='git log --no-merges'
 alias git-latest-tag="git tag --list | tac | head -1"
+alias fco="git branch | fzf | xargs git checkout"
 
 # OTHER
 alias blog='cd ~/code-personal/jsrn.github.io && subl . && open http://127.0.0.1:4000 && bundle exec jekyll serve --drafts --future'
 alias write='code --profile Writing'
 alias scrap='code --profile Writing ~/Desktop/scrap.md'
+alias bx='bundle exec'
 
 function valec() {
     pbpaste > /tmp/valeclip
@@ -57,9 +61,12 @@ function ia() {
 
 export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
 export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
+export HOMEBREW_NO_AUTO_UPDATE=1
 export REVEAL_RUBOCOP_TODO=1
 
 # Anything above this line should be stuff that I want on basically any system.
 # System specific changes should go after this line to avoid being overwritten.
 
 source ~/.zshrc-work
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
