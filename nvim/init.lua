@@ -45,6 +45,7 @@ end
 map("n", "<F5>", ":NvimTreeToggle<cr>")
 map("n", "<C-p>", ":Telescope find_files<cr>")
 map("n", "<F6>", "<Plug>(lcn-menu)")
+map("n", ",", ":WhichKey<cr>")
 
 vim.wo.number = true
 

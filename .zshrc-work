@@ -1,7 +1,7 @@
 export GITLAB_DEV_TOKEN=$(cat ~/.glpat-dev)
 export KUBE_EDITOR='code --wait'
 
-alias prep='bundle install && bundle exec rails db:migrate RAILS_ENV=development'
+alias prep='bundle install && bundle exec rails db:migrate RAILS_ENV=development && cleardbstuff'
 alias cpat='cat ~/.glpat-dev | pbcopy'
 alias glvale='vale --config /Users/jsrn/code/gdk/gitlab/.vale.ini'
 
@@ -59,4 +59,21 @@ function statham() {
 
 function quickprof() {
   watch -n 0.1 ps -p $1 -o %cpu,%mem,rss
+}
+
+function cleardbstuff() {
+  git checkout db/structure.sql
+  git clean -df db
+}
+
+function runtests() {
+  git diff --name-only $(git merge-base HEAD master) | grep spec | tr '\n' ' ' | xargs bundle exec rspec
+}
+
+function rspeclist() {
+  bundle exec rspec --format documentation --dry-run $1
+}
+
+function viewcommit() {
+  open "https://gitlab.com/gitlab-org/gitlab/-/commit/$1"
 }

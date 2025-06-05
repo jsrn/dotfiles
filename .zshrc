@@ -31,6 +31,7 @@ alias hosts="cat ~/.ssh/config | grep 'Host ' -A 1 | sed 's/    Hostname/Hostnam
 
 # GIT
 alias gcane='git commit --amend --no-edit'
+alias yesgcane='LEFTHOOK_EXCLUDE=rubocop git commit --amend --no-edit'
 alias gclean='CURR=`git branch --show-current --no-color`;git branch --merged | egrep -v "(^\*|$CURR)" | xargs git branch -d'
 alias pickaxe="git log -p -S"
 alias gl='git log --no-merges'
@@ -59,7 +60,7 @@ function ia() {
   open $1 -a /Applications/iA\ Writer.app
 }
 
-export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:$PATH"
+export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:/Users/jsrn/bin:$PATH"
 export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
 export HOMEBREW_NO_AUTO_UPDATE=1
 export REVEAL_RUBOCOP_TODO=1
@@ -70,3 +71,5 @@ export REVEAL_RUBOCOP_TODO=1
 source ~/.zshrc-work
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
+
+eval "$(mise activate --shims)"

@@ -26,3 +26,10 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[commit]
+	template = /Users/jsrn/.git_commit_msg.txt
+[blame]
+  coloring = repeatedLines
+  date = short
+[color "blame"]
+  repeatedLines = white dim

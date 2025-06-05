@@ -1,0 +1,2 @@
+The presence of this file prevents MacOS from printing
+the "last login" line when a new terminal window is opened.
