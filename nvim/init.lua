@@ -85,6 +85,68 @@ function map(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, options)
 end
 
+-- yank a reference to the symbol under the cursor, e.g. "ClassName" for a
+-- class, or "ClassName#method_name" for a method inside one
+local SYMBOL_KIND = { CLASS = 5, MODULE = 2, METHOD = 6, FUNCTION = 12, CONSTRUCTOR = 9 }
+local CLASS_KINDS = { [SYMBOL_KIND.CLASS] = true, [SYMBOL_KIND.MODULE] = true }
+local METHOD_KINDS = { [SYMBOL_KIND.METHOD] = true, [SYMBOL_KIND.FUNCTION] = true, [SYMBOL_KIND.CONSTRUCTOR] = true }
+
+local function in_range(range, line, col)
+  local s, e = range.start, range["end"]
+  if line < s.line or line > e.line then return false end
+  if line == s.line and col < s.character then return false end
+  if line == e.line and col > e.character then return false end
+  return true
+end
+
+local function find_symbol_path(symbols, line, col, ancestors)
+  for _, sym in ipairs(symbols or {}) do
+    if in_range(sym.range, line, col) then
+      local path = vim.deepcopy(ancestors)
+      table.insert(path, sym)
+      return find_symbol_path(sym.children, line, col, path) or path
+    end
+  end
+  return nil
+end
+
+function yank_symbol_reference()
+  local bufnr = vim.api.nvim_get_current_buf()
+  if #vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/documentSymbol" }) == 0 then
+    vim.notify("No LSP client supports document symbols", vim.log.levels.WARN)
+    return
+  end
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local line, col = cursor[1] - 1, cursor[2]
+  local params = vim.lsp.util.make_position_params(0, "utf-16")
+
+  vim.lsp.buf_request(bufnr, "textDocument/documentSymbol", params, function(err, result)
+    if err or not result then
+      vim.notify("No symbol under cursor", vim.log.levels.WARN)
+      return
+    end
+    local path = find_symbol_path(result, line, col, {})
+    if not path then
+      vim.notify("No symbol under cursor", vim.log.levels.WARN)
+      return
+    end
+
+    local last = path[#path]
+    local text = last.name
+    if METHOD_KINDS[last.kind] then
+      for i = #path - 1, 1, -1 do
+        if CLASS_KINDS[path[i].kind] then
+          text = path[i].name .. "#" .. last.name
+          break
+        end
+      end
+    end
+
+    vim.fn.setreg("+", text)
+    vim.notify("Yanked: " .. text)
+  end)
+end
+
 -- set up my keybinds
 map("n", "<F5>", ":NvimTreeToggle<cr>", { desc = "Toggle file tree" })
 map("n", "<C-p>", ":Telescope find_files<cr>", { desc = "Find files" })
@@ -99,6 +161,7 @@ map("n", "<leader>yf", function()
   vim.fn.setreg("+", path)
   vim.notify("Yanked: " .. path)
 end, { desc = "Yank file path" })
+map("n", "<leader>ys", yank_symbol_reference, { desc = "Yank symbol reference" })
 map("n", ",", ":WhichKey<cr>")
 
 vim.wo.number = true
