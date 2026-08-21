@@ -18,6 +18,7 @@ Plug('nvim-telescope/telescope.nvim')
 Plug('folke/which-key.nvim')
 Plug('catppuccin/nvim', { as = 'catppuccin' })
 Plug('nvim-lualine/lualine.nvim')
+Plug('stevearc/aerial.nvim')
 
 -- LSP
 Plug('williamboman/mason.nvim')
@@ -40,6 +41,18 @@ require("telescope").setup({
       prompt_position = "top",
     },
   },
+})
+
+-- symbol outline sidebar. treesitter is disabled above, so the LSP backend
+-- (ruby_lsp) is the only source of symbols
+require("aerial").setup({
+  backends = { "lsp" },
+  layout = {
+    default_direction = "left",
+    placement = "edge",
+    width = 30,
+  },
+  show_guides = true,
 })
 
 require("nvim-tree").setup({
@@ -208,6 +221,7 @@ end
 
 -- set up my keybinds
 map("n", "<F5>", ":NvimTreeToggle<cr>", { desc = "Toggle file tree" })
+map("n", "<F6>", ":AerialToggle<cr>", { desc = "Toggle symbol outline" })
 map("n", "<C-p>", ":Telescope find_files<cr>", { desc = "Find files" })
 map("n", "<leader>gf", ":Telescope find_files<cr>", { desc = "find files" })
 map("n", "<leader>gs", ":Telescope lsp_document_symbols<cr>", { desc = "go to symbol" })
