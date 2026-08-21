@@ -147,6 +147,22 @@ function yank_symbol_reference()
   end)
 end
 
+-- jump to the FactoryBot factory definition for the symbol under the
+-- cursor, e.g. cursor on :project in create(:project) -> factory :project
+function goto_factory_definition()
+  local name = vim.fn.expand("<cword>")
+  if name == "" then
+    vim.notify("No word under cursor", vim.log.levels.WARN)
+    return
+  end
+  require("telescope.builtin").grep_string({
+    search = "factory :" .. name .. "\\b",
+    use_regex = true,
+    search_dirs = { "spec/factories", "ee/spec/factories" },
+    prompt_title = "Factory: " .. name,
+  })
+end
+
 -- set up my keybinds
 map("n", "<F5>", ":NvimTreeToggle<cr>", { desc = "Toggle file tree" })
 map("n", "<C-p>", ":Telescope find_files<cr>", { desc = "Find files" })
@@ -156,6 +172,7 @@ map("n", "<leader>gr", function() require("telescope.builtin").oldfiles({ cwd_on
 map("n", "<leader>gb", ":Git blame<cr>", { desc = "git blame" })
 map("n", "<leader>go", ":GBrowse<cr>", { desc = "open in browser" })
 map("n", "<leader>gl", ":Telescope current_buffer_fuzzy_find<cr>", { desc = "fuzzy find" })
+map("n", "<leader>gF", goto_factory_definition, { desc = "go to factory definition" })
 map("n", "<leader>yf", function()
   local path = vim.fn.expand("%")
   vim.fn.setreg("+", path)
