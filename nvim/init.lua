@@ -106,6 +106,9 @@ vim.cmd.colorscheme "catppuccin"
 
 -- which-key
 require("which-key").setup({})
+require("which-key").register({
+  g = { name = "go to / git" },
+}, { prefix = "<leader>" })
 
 -- statusline
 require("lualine").setup({
@@ -172,6 +175,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "gr", vim.lsp.buf.references, { buffer = buf, desc = "Go to references" })
     map("n", "<F2>", vim.lsp.buf.rename, { buffer = buf, desc = "Rename symbol" })
     map("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = buf, desc = "Code action" })
+    require("which-key").register({
+      c = { name = "code actions" },
+    }, { prefix = "<leader>", buffer = buf })
     map("n", "[d", vim.diagnostic.goto_prev, { buffer = buf, desc = "Previous diagnostic" })
     map("n", "]d", vim.diagnostic.goto_next, { buffer = buf, desc = "Next diagnostic" })
   end,
