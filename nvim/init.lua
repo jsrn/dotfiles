@@ -163,6 +163,49 @@ function goto_factory_definition()
   })
 end
 
+-- toggle between a source file and its spec, following GitLab's
+-- conventions: app/X.rb <-> spec/X_spec.rb, lib/X.rb <-> spec/lib/X_spec.rb
+-- (each optionally under an ee/ prefix)
+function toggle_spec_file()
+  local path = vim.fn.expand("%")
+  local ee_prefix, rest = path:match("^(ee/)(.*)$")
+  if not ee_prefix then
+    ee_prefix, rest = "", path
+  end
+
+  local target
+  local body = rest:match("^spec/lib/(.*)_spec%.rb$")
+  if body then
+    target = ee_prefix .. "lib/" .. body .. ".rb"
+  else
+    body = rest:match("^spec/(.*)_spec%.rb$")
+    if body then
+      target = ee_prefix .. "app/" .. body .. ".rb"
+    else
+      body = rest:match("^lib/(.*)%.rb$")
+      if body then
+        target = ee_prefix .. "spec/lib/" .. body .. "_spec.rb"
+      else
+        body = rest:match("^app/(.*)%.rb$")
+        if body then
+          target = ee_prefix .. "spec/" .. body .. "_spec.rb"
+        end
+      end
+    end
+  end
+
+  if not target then
+    vim.notify("Don't know the spec convention for this path", vim.log.levels.WARN)
+    return
+  end
+
+  if vim.fn.filereadable(target) == 1 then
+    vim.cmd.edit(target)
+  else
+    vim.notify("No matching file found: " .. target, vim.log.levels.WARN)
+  end
+end
+
 -- set up my keybinds
 map("n", "<F5>", ":NvimTreeToggle<cr>", { desc = "Toggle file tree" })
 map("n", "<C-p>", ":Telescope find_files<cr>", { desc = "Find files" })
@@ -173,6 +216,7 @@ map("n", "<leader>gb", ":Git blame<cr>", { desc = "git blame" })
 map("n", "<leader>go", ":GBrowse<cr>", { desc = "open in browser" })
 map("n", "<leader>gl", ":Telescope current_buffer_fuzzy_find<cr>", { desc = "fuzzy find" })
 map("n", "<leader>gF", goto_factory_definition, { desc = "go to factory definition" })
+map("n", "<leader>gS", toggle_spec_file, { desc = "toggle spec/source file" })
 map("n", "<leader>yf", function()
   local path = vim.fn.expand("%")
   vim.fn.setreg("+", path)
