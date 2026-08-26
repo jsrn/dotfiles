@@ -239,6 +239,8 @@ end, { desc = "Yank file path" })
 map("n", "<leader>ys", yank_symbol_reference, { desc = "Yank symbol reference" })
 map("n", ",", ":WhichKey<cr>")
 
+map("n", "<leader>wv", ":vsplit<cr>", { desc = "split vertically" })
+
 vim.wo.number = true
 
 -- pretty
@@ -252,6 +254,7 @@ require("which-key").setup({})
 require("which-key").register({
   g = { name = "go to / git" },
   y = { name = "yank" },
+  w = { name = "window" },
 }, { prefix = "<leader>" })
 
 -- statusline
