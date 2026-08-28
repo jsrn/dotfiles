@@ -16,6 +16,9 @@ alias dcub='docker compose up --build'
 ## GLAB
 alias mr='glab mr view -w'
 
+## OTHER
+export TEST_DUO_WORKFLOW_SERVICE_ENABLED=false
+
 ## KUBERNETES
 # alias k='kubectl'
 # alias kx='kubectl exec'
@@ -33,11 +36,11 @@ function review() {
 }
 
 function prodpat() {
-  security find-generic-password -w -s 'GL Prod PAT' -a 'jnutt'
+  op read op://Employee/PATs/production
 }
 
 function stagingpat() {
-  security find-generic-password -w -s 'GL Staging PAT' -a 'jnutt'
+  op read op://Employee/PATs/staging
 }
 
 function undomigration() {

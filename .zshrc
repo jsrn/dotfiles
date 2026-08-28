@@ -19,7 +19,7 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-export EDITOR='code --wait'
+export EDITOR='nvim'
 
 # SYSTEM UTILITIES
 alias please='sudo $(fc -ln -1)'
@@ -43,6 +43,7 @@ alias blog='cd ~/code-personal/jsrn.github.io && subl . && open http://127.0.0.1
 alias write='code --profile Writing'
 alias scrap='code --profile Writing ~/Desktop/scrap.md'
 alias bx='bundle exec'
+alias rbj='gdk restart rails-background-jobs'
 
 function valec() {
     pbpaste > /tmp/valeclip
@@ -73,3 +74,14 @@ source ~/.zshrc-work
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 
 eval "$(mise activate --shims)"
+# opencode
+export PATH=/Users/jsrn/.opencode/bin:$PATH
+
+# Added by GitLab Knowledge Graph installer
+export PATH="$HOME/.local/bin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/jsrn/gcloud/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jsrn/gcloud/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/jsrn/gcloud/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jsrn/gcloud/google-cloud-sdk/completion.zsh.inc'; fi
