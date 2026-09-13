@@ -57,6 +57,9 @@ require("aerial").setup({
 
 require("nvim-tree").setup({
   sort_by = "case_sensitive",
+  git = {
+    enable = false,
+  },
   view = {
     width = 30,
   },
@@ -84,9 +87,6 @@ require("nvim-tree").setup({
         },
       },
     },
-  },
-  filters = {
-    dotfiles = true,
   },
 })
 
