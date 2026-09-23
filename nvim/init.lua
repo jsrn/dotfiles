@@ -315,6 +315,29 @@ require("mason-lspconfig").setup({})
 -- ruby_lsp is intentionally not installed via Mason: it's resolved via PATH
 -- (mise), which correctly picks up the project's own Ruby version and gems.
 -- See https://shopify.github.io/ruby-lsp/editors.html#neovim
+-- Indexing scope for large repos (GitLab). .index.yml is deprecated; ruby_lsp
+-- reads this from initializationOptions instead. Specs and vendor are skipped,
+-- plus the biggest gems we never jump into.
+vim.lsp.config('ruby_lsp', {
+  init_options = {
+    indexing = {
+      excludedPatterns = {
+        "**/spec/**/*",
+        "qa/qa/specs/features/**/*",
+        "vendor/**/*",
+        ".bundle/**/*",
+      },
+      excludedGems = {
+        "fog-aws", "fog-google", "gitlab-fog-azure-rm", "google-cloud-compute-v1",
+        "opensearch-ruby", "elasticsearch-api", "aws-sdk-core", "aws-sdk-s3",
+        "ffaker", "rubocop", "rubocop-rails", "rubocop-rspec",
+        "language_server-protocol", "solargraph", "yard", "rouge", "ohai",
+        "license_finder", "opentelemetry-semantic_conventions", "tins",
+        "selenium-webdriver", "lookbook", "coverband", "browser", "rails-i18n",
+      },
+    },
+  },
+})
 vim.lsp.enable('ruby_lsp')
 
 vim.api.nvim_create_autocmd("LspAttach", {
