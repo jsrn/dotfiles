@@ -2,6 +2,8 @@
   path = .gitconfig-work
 [includeIf "gitdir:~/code-personal/"]
   path = .gitconfig-personal
+[include]
+  path = .gitconfig-private
 [core]
   excludesfile = ~/.gitignore_global
   pager = "diff-so-fancy | less --tabs=4 -RF"
@@ -25,17 +27,18 @@
 [format]
   pretty = nicelog
 [maintenance]
-	repo = /Users/jsrn/code/gitlab-development-kit
-	repo = /Users/jsrn/code/gitlab-development-kit/gitlab
+  repo = /Users/jsrn/code/gitlab-development-kit
+  repo = /Users/jsrn/code/gitlab-development-kit/gitlab
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
 [commit]
-	template = /Users/jsrn/.git_commit_msg.txt
+  template = /Users/jsrn/.git_commit_msg.txt
 [blame]
   coloring = repeatedLines
   date = short
 [color "blame"]
   repeatedLines = white dim
+
