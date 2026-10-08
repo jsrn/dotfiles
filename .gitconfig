@@ -19,6 +19,9 @@
   dm = "!f() { git diff $(git merge-base --fork-point master); }; f"
   changed-files = diff --name-only master
   mr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
+  ap = add -p
+[alias "ap+"]
+  command = add -p -U10
 [format]
   pretty = nicelog
 [maintenance]

@@ -231,6 +231,7 @@ map("n", "<leader>gr", function() require("telescope.builtin").oldfiles({ cwd_on
 map("n", "<leader>gb", ":Git blame<cr>", { desc = "git blame" })
 map("n", "<leader>go", ":GBrowse<cr>", { desc = "open in browser" })
 map("n", "<leader>gl", ":Telescope current_buffer_fuzzy_find<cr>", { desc = "fuzzy find" })
+map("n", "<leader>gL", ":Telescope live_grep<cr>", { desc = "fuzzy find in project" })
 map("n", "<leader>gF", goto_factory_definition, { desc = "go to factory definition" })
 map("n", "<leader>gt", toggle_spec_file, { desc = "toggle spec/source file" })
 

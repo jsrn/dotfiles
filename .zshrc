@@ -25,7 +25,7 @@ export EDITOR='nvim'
 alias please='sudo $(fc -ln -1)'
 alias ipaddr="ifconfig | grep 192 | cut -d ' ' -f 2"
 alias nuke='shred -u'
-alias shconfig='code ~/.zshrc'
+alias dotfiles='nvim ~/code-personal/dotfiles'
 alias whatismyip="ifconfig | grep 192 | cut -d ' ' -f 2"
 alias hosts="cat ~/.ssh/config | grep 'Host ' -A 1 | sed 's/    Hostname/Hostname/' | cut -d ' ' -f 2"
 
@@ -37,6 +37,9 @@ alias pickaxe="git log -p -S"
 alias gl='git log --no-merges'
 alias git-latest-tag="git tag --list | tac | head -1"
 alias fco="git branch | fzf | xargs git checkout"
+alias rebase='git rebase'
+# pairs with the `stash` function defined below
+alias unstash='git stash pop'
 
 # OTHER
 alias blog='cd ~/code-personal/jsrn.github.io && subl . && open http://127.0.0.1:4000 && bundle exec jekyll serve --drafts --future'
@@ -59,6 +62,10 @@ function xman() {
 
 function ia() {
   open $1 -a /Applications/iA\ Writer.app
+}
+
+function stash() {
+  git stash save $1 --include-untracked
 }
 
 export PATH="/Applications/Sublime Text.app/Contents/SharedSupport/bin:/Users/jsrn/bin:$PATH"
