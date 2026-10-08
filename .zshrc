@@ -47,6 +47,7 @@ alias write='code --profile Writing'
 alias scrap='code --profile Writing ~/Desktop/scrap.md'
 alias bx='bundle exec'
 alias rbj='gdk restart rails-background-jobs'
+alias tmat='tmux a -t'
 
 function valec() {
     pbpaste > /tmp/valeclip
