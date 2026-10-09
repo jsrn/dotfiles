@@ -19,6 +19,12 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
+# Drop the "git:" label from the robbyrussell theme's branch display.
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}(%{$fg[red]%}"
+# Only show the theme's arrow, in red, when the last command failed.
+PROMPT="%(?..%{$fg_bold[red]%}%1{➜%} )%{$fg[cyan]%}%c%{$reset_color%}"
+PROMPT+=' $(git_prompt_info)'
+
 export EDITOR='nvim'
 
 # SYSTEM UTILITIES
