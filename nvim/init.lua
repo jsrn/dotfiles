@@ -32,6 +32,7 @@ Plug('hrsh7th/cmp-nvim-lsp')
 -- git
 Plug('tpope/vim-fugitive')
 Plug('shumphrey/fugitive-gitlab.vim')
+Plug('lewis6991/gitsigns.nvim')
 vim.call('plug#end')
 
 require("telescope").setup({
@@ -286,6 +287,18 @@ require("lualine").setup({
 -- other options
 vim.wo.colorcolumn = '80'
 vim.opt.cursorline = true
+-- always reserve the sign column so git/diagnostic signs don't shift the text
+vim.opt.signcolumn = "yes"
+
+-- git change markers in the sign column
+require("gitsigns").setup({
+  on_attach = function(buf)
+    local gs = require("gitsigns")
+    map("n", "]h", function() gs.nav_hunk("next") end, { buffer = buf, desc = "Next git hunk" })
+    map("n", "[h", function() gs.nav_hunk("prev") end, { buffer = buf, desc = "Previous git hunk" })
+    map("n", "<leader>gp", gs.preview_hunk, { buffer = buf, desc = "preview git hunk" })
+  end,
+})
 
 -- LSP
 vim.lsp.config('*', {
