@@ -61,6 +61,10 @@ function valec() {
     rm /tmp/valeclip
 }
 
+function catpb() {
+  cat $1 | pbcopy
+}
+
 # Open man pages in a nice little window.
 # h/t https://collindonnell.com/my-xman-function
 function xman() {
