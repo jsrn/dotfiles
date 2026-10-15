@@ -24,8 +24,11 @@ ZSH_THEME_TERM_TITLE_IDLE="zsh"
 
 # Show the git branch after a branch icon instead of the theme's "git:(...)".
 ZSH_THEME_GIT_PROMPT_PREFIX="%B%F{45}%1{%}"
+# Close with %f%b, not the theme's raw $reset_color, so zle knows the colour
+# is off and doesn't repaint the command line cyan after tab completion.
+ZSH_THEME_GIT_PROMPT_SUFFIX="%f%b "
 ZSH_THEME_GIT_PROMPT_CLEAN=""
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[yellow]%}%1{✗%}"
+ZSH_THEME_GIT_PROMPT_DIRTY=" %F{yellow}%1{✗%}"
 # Only show the theme's arrow, in red, when the last command failed.
 PROMPT="%(?..%{$fg_bold[red]%}%1{➜%} )%F{43}%c%f"
 PROMPT+=' $(git_prompt_info)'
