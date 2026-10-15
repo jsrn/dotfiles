@@ -19,6 +19,9 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
+# Idle terminal/tmux pane title is "user@host:cwd" by default; just say zsh.
+ZSH_THEME_TERM_TITLE_IDLE="zsh"
+
 # Show the git branch after a branch icon instead of the theme's "git:(...)".
 ZSH_THEME_GIT_PROMPT_PREFIX="%B%F{45}%1{%}"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
