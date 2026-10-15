@@ -31,9 +31,10 @@ ZSH_THEME_GIT_PROMPT_CLEAN=""
 ZSH_THEME_GIT_PROMPT_DIRTY=" %F{yellow}%1{✗%}"
 # Only show the theme's arrow, in red, when the last command failed.
 # The whole prompt sits on a plum block; %k comes after git_prompt_info
-# because its suffix only resets the foreground and bold.
+# because its suffix only resets the foreground and bold. The block ends in
+# a powerline arrow drawn in the plum as a foreground colour.
 PROMPT="%K{#44305a} %(?..%B%F{red}%1{➜%}%b )%F{43}%c%f"
-PROMPT+=' $(git_prompt_info)%k '
+PROMPT+=' $(git_prompt_info)%k%F{#44305a}%1{%}%f '
 
 export EDITOR='nvim'
 
