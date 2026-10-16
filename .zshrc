@@ -55,6 +55,7 @@ alias gl='git log --no-merges'
 alias git-latest-tag="git tag --list | tac | head -1"
 alias fco="git branch | fzf | xargs git checkout"
 alias rebase='git rebase'
+alias gpf='git push --force'
 # pairs with the `stash` function defined below
 alias unstash='git stash pop'
 
