@@ -16,3 +16,7 @@
 - Stay rigorous on relevant scope; do not boil the ocean.
 - Avoid generic praise or ego-inflating language. Be direct and substantive.
 
+# Code review
+
+- When running code reviews, e.g. through the `code-review` skill, always read the work item associated with the MR to confirm that the MR solves the stated problem.
+

@@ -19,7 +19,8 @@ alias mr='glab mr view -w'
 ## OTHER
 export TEST_DUO_WORKFLOW_SERVICE_ENABLED=false
 alias curl-library='cd ~/code/jnutt/scripts/curl-library'
-alias gdk='cd ~/code/gdk/gitlab'
+alias gogdk='cd ~/code/gdk/gitlab'
+alias tmus='tmux'
 
 ## KUBERNETES
 # alias k='kubectl'
