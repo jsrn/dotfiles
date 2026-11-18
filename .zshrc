@@ -1,7 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-export ZSH="/Users/jsrn/.oh-my-zsh"
+export ZSH="/Users/jnutt/.oh-my-zsh"
 
 zstyle ':omz:update' mode auto
 
@@ -115,3 +115,4 @@ if [ -f '/Users/jsrn/gcloud/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jsr
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/jsrn/gcloud/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jsrn/gcloud/google-cloud-sdk/completion.zsh.inc'; fi
+
