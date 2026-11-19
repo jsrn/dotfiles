@@ -42,6 +42,12 @@ require("telescope").setup({
       prompt_position = "top",
     },
   },
+  pickers = {
+    -- include dotfiles, but still respect .gitignore and skip .git itself
+    find_files = {
+      find_command = { "fd", "--type", "f", "--hidden", "--exclude", ".git" },
+    },
+  },
 })
 
 -- symbol outline sidebar. treesitter is disabled above, so the LSP backend
@@ -256,16 +262,16 @@ vim.cmd.colorscheme "catppuccin"
 
 -- which-key
 require("which-key").setup({})
-require("which-key").register({
-  g = { name = "go to / git" },
-  y = { name = "yank" },
-  w = { name = "window" },
-}, { prefix = "<leader>" })
+require("which-key").add({
+  { "<leader>g", group = "go to / git" },
+  { "<leader>y", group = "yank" },
+  { "<leader>w", group = "window" },
+})
 
 -- statusline
 require("lualine").setup({
   options = {
-    theme = "catppuccin",
+    theme = "catppuccin-frappe",
   },
   sections = {
     lualine_b = {
@@ -362,9 +368,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("n", "gr", vim.lsp.buf.references, { buffer = buf, desc = "Go to references" })
     map("n", "<F2>", vim.lsp.buf.rename, { buffer = buf, desc = "Rename symbol" })
     map("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = buf, desc = "Code action" })
-    require("which-key").register({
-      c = { name = "code actions" },
-    }, { prefix = "<leader>", buffer = buf })
+    require("which-key").add({
+      { "<leader>c", group = "code actions", buffer = buf },
+    })
     map("n", "[d", vim.diagnostic.goto_prev, { buffer = buf, desc = "Previous diagnostic" })
     map("n", "]d", vim.diagnostic.goto_next, { buffer = buf, desc = "Next diagnostic" })
   end,
