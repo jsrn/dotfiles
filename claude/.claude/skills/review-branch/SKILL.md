@@ -61,10 +61,36 @@ Invoke the `code-review` skill at the chosen level against the MR's diff
 (`<base_sha>...<head_sha>`), not against a local `master`. Collect every
 finding, uncertain ones included; filtering happens below.
 
-Then do your own pass for **test gaps**: for each changed behaviour, is there
-a spec that would fail if it regressed? Look especially for untested
-branches/early returns, negative and permission-denied paths, nil/empty
-inputs, and EE vs FOSS differences. Treat each gap as a finding.
+Then do your own pass for **test gaps**. Review the spec diff as its own pass,
+not as a side effect of reading the code. For each changed behaviour, is there
+a spec that would fail if it regressed? Check:
+
+- Untested branches/early returns, negative and permission-denied paths, and
+  EE vs FOSS differences.
+- Nil, empty, and whitespace-only inputs, and inputs that pass a guard clause
+  but should still hit a later check.
+- Each limit or threshold tested below, **at**, and above the boundary. A
+  boundary that one sibling check tests and another does not is a gap.
+- Each public option or override exercised, including disabling it (`nil`).
+- Order-dependent behaviour (for example, the cheapest guard runs first)
+  stated in the spec name and asserted.
+- A plausible future refactor (`empty?` → `present?`, `<=` → `<`, reordered
+  checks) that no spec would catch.
+
+Treat each gap as a finding.
+
+Also read the code and specs for **consistency and spec quality**:
+
+- Compare sibling methods line by line. When one differs (`<` where the
+  others use `<=`, a missing guard, a different return), ask why. If the
+  reason is not obvious from the code, ask for a short comment.
+- Check that `before` blocks, `let`, and `stub_const` run in the order the
+  example needs. Setup that runs before a stub, or work the example then
+  throws away, is a finding.
+- Check that spec names describe what the example asserts, including what it
+  skips.
+- Spec and code comments that only restate the code break the repo's comment
+  rule. Report them as nits.
 
 If Orbit is available, run `glab orbit context` on each changed definition to
 get its callers and covering tests in one call:
@@ -113,6 +139,8 @@ Start with one summary block:
 - The remaining IDs in order, most severe first, each with severity
   (blocker / improvement / nit) and a ≤10-word label.
 - Pre-existing issues noticed, one line each, if any.
+- Any part of the diff not reviewed in depth (for example, specs), so I can
+  tell the next reviewer.
 
 Then present the remaining findings **one at a time**, most severe first.
 For each:
@@ -153,6 +181,9 @@ process. Read `.ai/security-fixes.md` and
   `glab orbit query` sends its text to the GitLab.com API, so keep
   vulnerability details out of query text.
 - A spec reproduces the original vulnerability and would fail without the fix.
+- For resource-exhaustion fixes, the cheapest bound (size, rate limit) runs
+  before any costly work, and specs prove the guard cannot be skipped by
+  edge inputs (empty, whitespace-only, at the limit).
 - If the fix changes default behaviour that could block legitimate use, it
   ships with an admin opt-out or other console-free remediation path.
 - Nothing in the code, comments, specs or commit messages discloses the
