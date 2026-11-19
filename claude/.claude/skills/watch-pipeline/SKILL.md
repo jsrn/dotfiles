@@ -2,7 +2,7 @@
 name: watch-pipeline
 description: Watch a GitLab merge request's latest pipeline on a schedule and notify me when it finishes. Use when asked to "watch the pipeline", "let me know when CI finishes", "check the pipeline every N minutes", "ping me when the MR pipeline is done", or "keep an eye on" an MR's CI — including security-mirror MRs in gitlab-org/security/*. Read-only.
 argument-hint: <mr-url | group/project!iid> [interval-minutes]
-allowed-tools: Bash(*/watch-pipeline/scripts/pipeline_status.sh:*), Bash(glab api:*), Bash(date:*)
+allowed-tools: Bash(*/watch-pipeline/scripts/pipeline_status.sh:*), Bash(glab api:*), Bash(date:*), Bash(glab orbit query:*)
 ---
 
 # Watch pipeline
@@ -52,7 +52,7 @@ self-contained. Fill in this template:
 Pipeline watch for <mr-ref> (<mr-url>). Read-only: do not post comments, push, retry or cancel jobs.
 1. Run: <absolute-path>/scripts/pipeline_status.sh '<mr-ref>'
 2. If "finished" is false: reply with one line only (pipeline id+link, status, parent passed/failed counts, which bridge pipelines are still running). Do NOT notify. If the pipeline id differs from <first-pipeline-id>, say a new pipeline started.
-3. If "finished" is true: send PushNotification "<short-ref> pipeline <id>: <status>, <n> blocking failures (<m> allowed)". Then CronList, find this pipeline-watch job for <mr-ref>, CronDelete it. Report: status with link, each downstream pipeline status, failed jobs grouped as blocking (allow_failure false) and allowed, with job links. End with a `result:` line.
+3. If "finished" is true: send PushNotification "<short-ref> pipeline <id>: <status>, <n> blocking failures (<m> allowed)". Then CronList, find this pipeline-watch job for <mr-ref>, CronDelete it. Report: status with link, each downstream pipeline status, failed jobs grouped as blocking (allow_failure false) and allowed, with job links. For each blocking failure (at most 5), run: glab orbit query "MATCH (j:Job {project_id: <project-id>, name: '<job-name>', ref: 'master'}) WHERE j.created_at >= '<14-days-ago>T00:00:00Z' RETURN j.status, j.failure_reason, count(j) AS jobs ORDER BY jobs DESC LIMIT 10" and add its master failure rate next to the job. Skip this if Orbit errors. End with a `result:` line.
 ```
 
 Tell the user: the job ID, the first run time from the `CronCreate`
@@ -71,6 +71,12 @@ these limits:
   no downstream pipeline, so say "skipped".
 - Failed jobs, split into **blocking** (`allow_failure: false`) and
   **allowed to fail**, with links. Say which pipeline each is in.
+- For each blocking failure, how often the same job failed on `master` in
+  the last 14 days, from the Orbit query in the cron template. A job that also
+  fails on `master` is probably not caused by the MR. Say so, and check the
+  ci-health incidents listed in `AGENTS.md` for the job. Use the MR project's
+  numeric ID (`278964` for `gitlab-org/gitlab`). Orbit may not index
+  `gitlab-org/security/*`, so skip the check there if it returns nothing.
 
 Why split them: a parent pipeline can show `success` with failed jobs, and
 `failed` usually comes from one blocking job. The user needs to see which

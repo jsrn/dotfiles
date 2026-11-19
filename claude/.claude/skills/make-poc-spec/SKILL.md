@@ -1,7 +1,7 @@
 ---
 name: make-poc-spec
 description: Generate a proof-of-concept RSpec spec that demonstrates a bug or edge case from the problem(s) we're discussing, usually a code review finding. The spec is written against the local checkout, run, and never committed.
-allowed-tools: Bash(bin/rspec:*), Bash(bundle exec rspec:*), Bash(git status:*)
+allowed-tools: Bash(bin/rspec:*), Bash(bundle exec rspec:*), Bash(git status:*), Bash(glab orbit context:*)
 ---
 
 # Make PoC spec
@@ -41,6 +41,13 @@ These specs exist to show the issue to another person. So:
 Mirror the path of the code under test under `spec/`, and prefix the file name
 with `poc_`. For example, `app/finders/foo_finder.rb` becomes
 `spec/finders/poc_foo_finder_spec.rb`. Never edit an existing spec file.
+
+## Find set-up to copy
+
+If Orbit is available, run `glab orbit context <path>:<lines>` on the code
+under test. It lists the spec files that cover it. Copy the factories, traits
+and shared contexts from the closest one, instead of building set-up from
+scratch.
 
 ## Run it
 

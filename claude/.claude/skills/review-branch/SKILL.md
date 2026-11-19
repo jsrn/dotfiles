@@ -2,7 +2,7 @@
 name: review-branch
 description: Deep review of the MR for my current local branch, or of a given MR checked out into a separate worktree — run code-review, then filter the findings against the MR's existing discussion and the work item's intent, verify each one (with PoC specs where useful), check test gaps, and walk me through the surviving findings one at a time. Use when asked to "review my branch", "review this MR properly", "deep review", or to triage code-review findings before posting. Applies the security MR process on `security-` branches.
 argument-hint: "[low|medium|high|xhigh] [mr-iid-or-url]"
-allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab mr note list:*), Bash(glab issue view:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git blame:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git merge-base:*), Bash(git status:*), Bash(git worktree list:*), Bash(glab mr checkout:*), Bash(ln -s:*), Bash(bin/rspec:*), Bash(bundle exec rspec:*)
+allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab mr note list:*), Bash(glab issue view:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git blame:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git merge-base:*), Bash(git status:*), Bash(git worktree list:*), Bash(glab mr checkout:*), Bash(ln -s:*), Bash(bin/rspec:*), Bash(bundle exec rspec:*), Bash(glab orbit grep:*), Bash(glab orbit context:*), Bash(glab orbit query:*)
 ---
 
 # Review branch
@@ -51,6 +51,9 @@ Gather this before reviewing, so intent shapes what counts as a finding.
   `glab api` for work items/epics) including comments. Summarise the intended
   behaviour and any acceptance criteria in 2-3 lines. If there is no work item,
   say so and use the MR description as the statement of intent.
+- **Overlapping MRs**: if Orbit is available, list other open MRs that change
+  the same files (query in the `glab` skill). Note any that conflict with or
+  duplicate this change.
 
 ## 2. Run code-review
 
@@ -62,6 +65,14 @@ Then do your own pass for **test gaps**: for each changed behaviour, is there
 a spec that would fail if it regressed? Look especially for untested
 branches/early returns, negative and permission-denied paths, nil/empty
 inputs, and EE vs FOSS differences. Treat each gap as a finding.
+
+If Orbit is available, run `glab orbit context` on each changed definition to
+get its callers and covering tests in one call:
+
+- A changed method with no covering test is a gap.
+- A caller outside the diff whose behaviour changes with this MR (new return
+  value, new exception, new permission check) is a finding. Name the caller
+  with `path:line`.
 
 ## 3. Name each finding
 
@@ -81,7 +92,8 @@ For each finding, record:
 2. **Caused by this MR?** Use the diff and `git blame` on the base to decide
    whether the MR introduced the problem, or made it newly reachable or worse.
    A problem that exists unchanged on the base is pre-existing: drop it from
-   the main list but keep a one-line note of it.
+   the main list but keep a one-line note of it. To judge "newly reachable",
+   check the callers that `glab orbit context` lists for the changed code.
 3. **In scope?** Compare against the work item's intent. A finding that
    contradicts the stated intent is a blocker; one that asks for work the
    issue explicitly defers is not.
@@ -135,7 +147,11 @@ process. Read `.ai/security-fixes.md` and
 - A changelog entry is present with the `Changelog: security` trailer.
 - The fix closes the vulnerability completely: look for sibling entry points
   (REST, GraphQL, internal API, other controllers or services) that reach the
-  same code without the new check.
+  same code without the new check. With Orbit, start from the callers that
+  `glab orbit context` lists for the vulnerable method, and follow each one
+  that is not covered by the fix. `grep` and `context` read the local index.
+  `glab orbit query` sends its text to the GitLab.com API, so keep
+  vulnerability details out of query text.
 - A spec reproduces the original vulnerability and would fail without the fix.
 - If the fix changes default behaviour that could block legitimate use, it
   ships with an admin opt-out or other console-free remediation path.

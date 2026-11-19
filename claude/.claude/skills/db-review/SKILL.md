@@ -2,7 +2,7 @@
 name: db-review
 description: Perform a GitLab database review of a merge request or the current branch. Use when asked to "db review", "database review", review migrations, review a ~database MR, or check schema/query changes against GitLab database guidelines. Covers migrations, structure.sql, db/docs dictionary, indexes, large-table limits, query plans, and batched background migrations.
 argument-hint: "[mr-iid-or-url]"
-allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab ci get:*), Bash(glab ci trace:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*)
+allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab ci get:*), Bash(glab ci trace:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(glab orbit grep:*), Bash(glab orbit context:*), Bash(glab orbit query:*)
 ---
 
 # GitLab Database Review
@@ -63,6 +63,14 @@ Consult these on demand when the change touches the topic:
     which has migration runtimes.
 
   Report any of those jobs that are missing, failing, or still running.
+- If Orbit is available, run `glab orbit context` on each changed scope,
+  finder method, or query-building method to list its callers. Callers in
+  workers, API endpoints, and GraphQL resolvers show where the query runs and
+  how often. Ask for a plan for each distinct call shape (filters, ordering,
+  limits), not only the one in the spec.
+- For each touched table, list other open MRs that change its
+  `db/docs/<table>.yml` or its model file (query in the `glab` skill). Flag
+  conflicting schema changes.
 
 ## 3. Checklist
 

@@ -2,7 +2,7 @@
 name: re-review
 description: Review changes to an MR since my last round of review comments. Use when asked to "re-review", do a "follow-up review", "check the MR again", or check whether the author "addressed my comments" or "responded to my feedback".
 argument-hint: <mr-iid-or-url>
-allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab mr note list:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git range-diff:*)
+allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab mr note list:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(git range-diff:*), Bash(glab orbit grep:*), Bash(glab orbit context:*)
 ---
 
 # Re-review
@@ -56,6 +56,9 @@ For the new changes as a whole:
   already reviewed?
 - Do they meet the same quality bar as new code? Fixes don't get a lighter
   review.
+- If Orbit is available, run `glab orbit context` on definitions the new
+  changes touch. Check that callers outside the MR still work with the new
+  behaviour, and that a covering test exists.
 - Where a change brings in a new tradeoff, give up to three pros and cons.
 
 If a finding is disputed or subtle, offer to demonstrate it with

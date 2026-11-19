@@ -1,7 +1,7 @@
 ---
 name: glab
 description: Shared conventions for reading and commenting on a GitLab merge request with the glab CLI. Use when another skill (db-review, re-review) needs MR context, or when asked to read an MR's description, diff, discussions, versions or CI status, or to post review comments on an MR.
-allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab mr note list:*), Bash(glab mr note draft list:*), Bash(glab ci status:*), Bash(glab ci get:*), Bash(glab ci trace:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git rev-parse:*), Bash(git range-diff:*)
+allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab mr note list:*), Bash(glab mr note draft list:*), Bash(glab ci status:*), Bash(glab ci get:*), Bash(glab ci trace:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git rev-parse:*), Bash(git range-diff:*), Bash(glab orbit grep:*), Bash(glab orbit context:*), Bash(glab orbit query:*)
 ---
 
 # Working with a merge request via glab
@@ -43,6 +43,29 @@ glab api projects/:fullpath/merge_requests/<iid>/versions
 
 If the local checkout's `HEAD` is not the MR's `head_sha`, say so. Line numbers
 from the working tree may not match the MR.
+
+### Orbit
+
+When GitLab Orbit is available (`glab orbit --yes status` reports `HEALTHY`),
+use it alongside the commands above. Load the `orbit` skill before writing
+graph queries.
+
+- `glab orbit context mr:<iid>` reads the description, review threads,
+  changed files, and failed CI jobs in one call. Use it for a quick overview,
+  but still fetch `discussions` and `versions` with `glab api` when you need
+  discussion IDs, resolved state, or push history.
+- `glab orbit context <path>:<start>-<end>` or `<name>` returns the code with
+  its indexed callers and covering tests. Callers lists end in `+N more`; pass
+  the `Definition:<id>` that `glab orbit grep` prints to get the full list.
+- Graph answers for `gitlab-org/gitlab` use `project_id: 278964`. Calls are
+  resolved inside one project only, and the graph can lag behind the latest
+  push. Treat a result as evidence to check in the code, not as proof.
+
+Other open MRs that touch the same files:
+
+```
+glab orbit query "MATCH (mr:MergeRequest {project_id: 278964, state: 'opened'}) -[:HAS_LATEST_DIFF]->(d:MergeRequestDiff) -[:HAS_FILE]->(f:MergeRequestDiffFile {project_id: 278964}) WHERE f.old_path IN ['<path>', '<path>'] AND mr.iid <> <iid> RETURN mr.iid, mr.title, f.old_path LIMIT 50"
+```
 
 ## 3. CI
 
