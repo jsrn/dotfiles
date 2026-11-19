@@ -1,0 +1,9 @@
+brew "neovim"
+brew "stow"
+brew "jq"
+brew "glab"
+brew "bat"
+brew "ripgrep"
+brew "fd"
+brew "diff-so-fancy"
+
