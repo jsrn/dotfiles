@@ -1,14 +1,15 @@
 ---
 name: todo-triage
-description: Triage my pending GitLab TODOs into a prioritised list (Act now / Review today / Assigned / Mark done), with the review type, size and urgency of each review request, then mark TODOs done one by one after I confirm. Use when asked to "triage my TODOs", "go through my todos", "what's in my GitLab inbox", "what should I review today", or "what's waiting on me".
-allowed-tools: Bash(~/.claude/skills/todo-triage/scripts/gather.sh:*), Bash(jq:*), Bash(mktemp:*), Bash(glab api user:*), Bash(glab api projects/:*), Bash(glab api -X POST todos/:*)
+description: Triage my pending GitLab TODOs and my Taskwarrior work tasks into a prioritised list (Act now / Review today / Assigned / Mark done), with the review type, size and urgency of each review request, then mark TODOs and tasks done one by one after I confirm. Use when asked to "triage my TODOs", "go through my todos", "what's in my GitLab inbox", "what should I review today", or "what's waiting on me".
+allowed-tools: Bash(~/.claude/skills/todo-triage/scripts/gather.sh:*), Bash(jq:*), Bash(mktemp:*), Bash(glab api user:*), Bash(glab api projects/:*), Bash(glab api -X POST todos/:*), Bash(task project:work status:pending export)
 ---
 
 # TODO triage
 
 Follow the `glab` skill's conventions for reading MR context. Never post,
-resolve, approve or edit anything on GitLab. The only write this skill makes
-is marking a TODO done, and only after I confirm that item.
+resolve, approve or edit anything on GitLab. The only writes this skill makes
+are marking a GitLab TODO done and completing a Taskwarrior task, each only
+after I confirm that item.
 
 ## 1. Gather
 
@@ -32,6 +33,18 @@ glab quirks, already handled in the script, to remember for ad-hoc calls:
 - `--paginate` concatenates arrays; use `jq -s 'add'`.
 - Run loops under `bash -c`, because zsh does not word-split `$var`.
 - `issues/:iid` 404s in `gitlab-com/request-for-help`, but `issues/:iid/notes` works.
+
+### Taskwarrior
+
+```
+task project:work status:pending export
+```
+
+This prints JSON for every pending task in `work` and its sub-projects, such
+as `work.reviews`. The filter has to come before `export`, because Taskwarrior
+3 reads an argument after `export` as a report name. Keep each task's `uuid`,
+`description`, `project`, `due`, `priority`, `tags`, `annotations` and
+`urgency`. Note any GitLab MR or issue URL in the description or annotations.
 
 ## 2. Assess each review request
 
@@ -65,14 +78,26 @@ Move it down when `approvals_left == 0` and my category isn't required, when
 the ask says "when you have time" and nothing above applies, or when it's
 docs-only.
 
-## 3. Categorise
+## 3. Assess each Taskwarrior task
+
+- **Linked to a GitLab item in `items.json`:** merge it into that item's row,
+  and mention the task in **Why**. Its category follows the GitLab item.
+- **Linked to a GitLab item with no TODO:** check that item's state with
+  `glab api`. If the item is merged or closed, the task goes in **Mark done**.
+- **Not linked:** put it in **Act now** if it's overdue, due today or
+  `priority:H`. Put it in **Review today** if it's due within 2 working days or
+  `priority:M`. Leave the rest out of the tables, and give their count in a
+  single line under the report.
+- Within a category, order tasks by `urgency`, highest first.
+
+## 4. Categorise
 
 - **Act now:** my own MRs waiting on me; unsubmitted draft notes (the author can't see them); urgent reviews from step 2.
 - **Review today:** other review requests, ordered by urgency and then size (quick wins first when urgency ties).
 - **Assigned, no TODO action needed:** `assigned` TODOs on issues. Say what the issue currently needs from me, if anything.
 - **Mark done:** TODOs needing nothing from me: thanks or FYI mentions; MRs I'm no longer a reviewer on; settled threads; ccs superseded elsewhere; merged or closed targets.
 
-## 4. Output
+## 5. Output
 
 One table per category, using the same layout every day.
 
@@ -80,11 +105,12 @@ One table per category, using the same layout every day.
 |---|---|---|---|---|
 
 - Put the link and title in **Item**, and leave out Type and Size for non-review items.
+- Give an unmerged task as "Task `<first 8 chars of uuid>`: description" in **Item**, and give its due date and priority in **Why**.
 - Keep **Why** to one or two sentences: what's being asked, who's waiting, and what changed since I last looked.
-- Head the report with the date and counts ("15 TODOs across 11 items").
-- Finish with a line saying nothing on GitLab has been changed yet.
+- Head the report with the date and counts ("15 TODOs across 11 items, 6 work tasks").
+- Finish with a line saying nothing on GitLab or in Taskwarrior has been changed yet.
 
-## 5. Mark done, one item at a time
+## 6. Mark done, one item at a time
 
 After the report, ask about each item in **Mark done**, and then any others
 where marking the TODO done is reasonable, such as Assigned items. Use
@@ -96,6 +122,16 @@ For each item I confirm, mark every TODO on that item done:
 ```
 glab api -X POST todos/<id>/mark_as_done
 ```
+
+For each task I confirm, including one merged into a GitLab row that I marked
+done, run this with its full uuid:
+
+```
+task <uuid> done
+```
+
+Always use the uuid, never a filter or a short id. A filter can complete
+several tasks at once, and short ids change as tasks are completed.
 
 Report what was marked done and what was kept. Never use `todos/mark_as_done`
 (which marks everything done).

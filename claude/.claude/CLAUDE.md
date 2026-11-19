@@ -20,3 +20,7 @@
 
 - When running code reviews, e.g. through the `code-review` skill, always read the work item associated with the MR to confirm that the MR solves the stated problem.
 
+
+# Work log
+
+When you finish a unit of work for me — a code review or re-review, posting MR comments, opening or pushing to an MR, or picking up an issue — invoke the `work-log` skill to record it in `~/Desktop/work.md`.

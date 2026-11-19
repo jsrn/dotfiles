@@ -1,0 +1,3 @@
+# Taskwarrior config. Task data lives in ~/.task, outside this repo.
+data.location=~/.task
+news.version=3.5.0
