@@ -34,6 +34,13 @@ Record what I did in `~/Desktop/work.md`, under today's date heading.
   followed by a full stop. Get the title from GitLab
   (`glab orbit context mr:<iid>`, or `glab mr view`/`glab issue view`) — do
   not paraphrase it.
+- Before you log an MR title, remove these annotations and the whitespace
+  around them:
+    - Draft prefixes: `Draft:`, `[Draft]`, `(Draft)`.
+    - CI skip tags: `[ci skip]`, `[skip ci]`, anywhere in the title.
+
+  Do not change other text in the title. Example:
+  `Draft: Add webhook retries [ci skip]` becomes `Add webhook retries`.
 - Link work items and issues as `https://gitlab.com/<project>/-/work_items/<iid>`
   and MRs as `https://gitlab.com/<project>/-/merge_requests/<iid>`.
 
