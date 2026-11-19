@@ -12,24 +12,24 @@ Record what I did in `~/Desktop/work.md`, under today's date heading.
 ## File format
 
 ```markdown
-## 19th November 2026
+# 19th November 2026
 
 - Code:
     - Picked up [Explore archiving webhook logs to object storage](https://gitlab.com/gitlab-org/gitlab/-/work_items/605238).
 - Review:
     - [Mark default webhook payloads with a signed body field](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268146).
-        - This adds data to almost every webhook payload, so it LGTM but let's not merge it until the log payloads are in object storage.
 - Other:
     - Re-enrolling in MDM stuff.
 ```
 
-- Date heading: `## <ordinal day> <full month> <year>`. Ordinals: 1st, 2nd,
+- Date heading: `# <ordinal day> <full month> <year>`. Ordinals: 1st, 2nd,
   3rd, 4th–20th, 21st, 22nd, 23rd, 24th–30th, 31st. Get the date from
   `date '+%-d %B %Y'`; do not assume it.
 - Sections, in this order: `Code`, `Review`, `Other`. Include a section only
   when it has an entry.
-- Indent with 4 spaces. Top-level entry bullets sit under a section; notes are
-  sub-bullets under an entry.
+- Indent with 4 spaces. Entry bullets sit under a section.
+- Log only the work done: one line per entry, no sub-bullets or notes. I add
+  notes myself.
 - Each MR, issue, or work item entry is a Markdown link with its exact title,
   followed by a full stop. Get the title from GitLab
   (`glab orbit context mr:<iid>`, or `glab mr view`/`glab issue view`) — do
@@ -46,13 +46,6 @@ Record what I did in `~/Desktop/work.md`, under today's date heading.
 | Reviewed, re-reviewed, or commented on someone else's MR | Review | `[Title](url).` |
 | Anything else (reading, meetings, admin, research) | Other | Plain sentence. |
 
-## Notes under an entry
-
-Add 0–3 short sub-bullets with what matters for later: the verdict and why
-("LGTM but hold until X"), the main concern raised, a decision, or what is
-left to do. Write in my voice, first person, past or present tense, no
-filler. Do not list every comment. Omit notes when the link says it all.
-
 ## Steps
 
 1. Run `date '+%-d %B %Y'` and build the heading.
@@ -61,10 +54,10 @@ filler. Do not list every comment. Omit notes when the link says it all.
    preceded by a blank line.
 4. Under today's heading, find or create the right section, keeping the
    `Code`, `Review`, `Other` order.
-5. If the same link is already in that section today, add new notes under the
-   existing entry instead of a duplicate entry. Otherwise append the entry at
-   the end of the section.
-6. Change only today's block. Never edit or reformat earlier days.
+5. If the same link is already in that section today, do nothing. Otherwise
+   append the entry at the end of the section.
+6. Change only today's block. Never edit or reformat earlier days, or notes I
+   have added.
 7. Tell me in one line what was logged.
 
 ## When not to log
