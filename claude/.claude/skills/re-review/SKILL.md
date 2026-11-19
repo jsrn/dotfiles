@@ -14,7 +14,7 @@ Follow the `glab` skill to resolve the MR and read its context.
 
 ## 1. Find my last round
 
-1. Get my username: `glab api user --jq .username`.
+1. Get my username: `glab api user | jq -r .username`.
 2. Fetch all discussions (`--paginate`). Keep the non-system notes I wrote.
    The newest `created_at` among them is the **baseline time**. If I have no
    comments on the MR, say so and stop.

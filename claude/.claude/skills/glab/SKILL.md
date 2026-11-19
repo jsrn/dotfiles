@@ -25,7 +25,7 @@ project; otherwise URL-encode the path (`gitlab-org%2Fgitlab`).
 ```
 glab mr view <iid> -F json                 # title, description, labels, author, sha, diff_refs, web_url
 glab mr diff <iid>                         # full diff of the latest version
-glab api user --jq .username               # who "me" is
+glab api user | jq -r .username            # who "me" is
 glab api --paginate projects/:fullpath/merge_requests/<iid>/discussions
 glab api projects/:fullpath/merge_requests/<iid>/versions
 ```
