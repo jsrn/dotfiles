@@ -2,7 +2,7 @@
 name: db-review
 description: Perform a GitLab database review of a merge request or the current branch. Use when asked to "db review", "database review", review migrations, review a ~database MR, or check schema/query changes against GitLab database guidelines. Covers migrations, structure.sql, db/docs dictionary, indexes, large-table limits, query plans, and batched background migrations.
 argument-hint: "[mr-iid-or-url]"
-allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab ci get:*), Bash(glab ci trace:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(glab orbit grep:*), Bash(glab orbit context:*), Bash(glab orbit query:*)
+allowed-tools: Bash(glab mr view:*), Bash(glab mr diff:*), Bash(glab issue view:*), Bash(glab ci get:*), Bash(glab ci trace:*), Bash(git fetch:*), Bash(git diff:*), Bash(git log:*), Bash(git show:*), Bash(glab orbit grep:*), Bash(glab orbit context:*), Bash(glab orbit query:*)
 ---
 
 # GitLab Database Review
@@ -48,6 +48,10 @@ Consult these on demand when the change touches the topic:
   `glab` skill to resolve it and read its description, diff, and discussions.
   For the current branch with no MR, `git fetch origin master` and use
   `git diff origin/master...HEAD`. Read the MR description in full.
+- Work item: find it from `Closes`/`Related to` links in the description, or
+  an issue number in the branch name. Read it with `glab issue view`,
+  including comments, and confirm the database change serves its stated
+  intent. If there is no work item, say so and use the MR description.
 - Classify every changed file: `db/migrate`, `db/post_migrate`,
   `db/structure.sql`, `db/schema_migrations`, `db/docs/*.yml`,
   `lib/gitlab/background_migration`, `spec/migrations`, models/finders/scopes,
@@ -77,7 +81,14 @@ Consult these on demand when the change touches the topic:
 Read `checklist.md` in this skill's directory and evaluate every item that
 applies to the change.
 
-## 4. Report
+## 4. Filter and verify
+
+Filter and verify each finding as in section 4 of the `review-branch` skill
+(`../review-branch/SKILL.md`): drop findings already fixed or rebutted in the
+MR discussions, drop pre-existing ones (keep a one-line note), and mark each
+remaining one Confirmed or Plausible.
+
+## 5. Report
 
 Follow `.ai/code-review.md` severity layers. Output, in this order:
 
@@ -102,5 +113,3 @@ Rules:
   `/make-poc-spec`.
 - Do not post to GitLab unless asked. If asked, follow the posting rules in
   the `glab` skill.
-- Before posting, draft the prose with the `Agent` tool (`model: sonnet`),
-  then check the draft against your findings before showing it to the user.

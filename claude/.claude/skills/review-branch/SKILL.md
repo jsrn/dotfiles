@@ -79,6 +79,12 @@ a spec that would fail if it regressed? Check:
 
 Treat each gap as a finding.
 
+If the diff touches `db/`, `lib/gitlab/background_migration/`, or changes
+scopes, finders, or other query-building code, also do a **database pass**:
+read `../db-review/checklist.md` and evaluate every item that applies. Treat
+each miss as a finding with a `db-` ID prefix. Cite the doc that states the
+rule, per the topic table in `../db-review/SKILL.md`.
+
 Also read the code and specs for **consistency and spec quality**:
 
 - Compare sibling methods line by line. When one differs (`<` where the
