@@ -77,7 +77,9 @@ Consult these on demand when the change touches the topic:
   workers, API endpoints, and GraphQL resolvers show where the query runs and
   how often. Ask for a plan for each distinct call shape (filters, ordering,
   limits), not only the one in the spec. For each caller, record whether it
-  runs in a GET (or page render) or a write request.
+  runs in a GET (or page render) or a write request. Do the same for each
+  new write, and complete the "Where and how often writes run" section of
+  the checklist. An MR with no migrations still gets this check.
 - For each touched table, list other open MRs that change its
   `db/docs/<table>.yml` or its model file (query in the `glab` skill). Flag
   conflicting schema changes.

@@ -105,15 +105,43 @@ doc wins. Use the doc's value and mention that this checklist is out of date.
 
 ### Where and how often writes run
 
-- Find every caller of each new write (Orbit callers). A write reachable
-  from a GET, a page render, a helper, or a GraphQL query is a blocker
-  question, even with a `read_only?` guard
+Do this section even when the MR has no migrations and the query plans are
+good. Good plans do not make a write safe on a hot path.
+
+- Read the description's reasons and design text, not only the SQL. A
+  phrase like "one-time write per user during a page GET" is the finding.
+- For each new write (`INSERT`, `UPDATE`, upsert, `save`, `update`,
+  `transaction`), name its entry point: controller action and HTTP
+  method, worker, or GraphQL mutation. Use Orbit callers and follow them
+  up to the request. A write reachable from a GET, a page render, a
+  helper, a view, or a GraphQL query is a blocker unless the MR justifies
+  it, even with a `read_only?` guard. That guard covers only Geo and
+  maintenance mode, not load on the primary
   (`doc/development/database/verifying_database_capabilities.md`). Ask to
-  move it to an existing write request or a background job. Maintainers
-  have linked such writes to production incidents.
-- Estimate how many times each write runs: callers × request rate ×
-  affected users. A "once per user" write that runs on page load writes
-  for every active user right after the flag is enabled. Ask for a
-  percentage-of-actors rollout, and ask whether the write is needed at all.
+  move the write to an existing write request or a background job.
+  Maintainers have linked such writes to severity 1 incidents
+  (production#22579: "repeated database writes on each request").
+- For each guard that stops a repeat write (callout, flag, column,
+  timestamp), check whether it commits when the write fails. If the guard
+  is in the same transaction as the write, a statement timeout or lock
+  wait rolls back both. A caller that rescues the error then retries the
+  write on every request, with no backoff. Ask how often a failed write
+  retries, and when the primary is slow.
+- Estimate how many times each write runs at each rollout step: callers ×
+  request rate × newly enabled active users. A "once per user" write on
+  page load writes for every active user right after each flag step. A
+  percentage-of-actors rollout spreads this load. It does not make a write
+  on a GET safe, so do not accept it as the fix.
+- For writes in web requests, note the load-balancer effect:
+  `RackMiddleware#stick_if_necessary` sticks the user to the primary after
+  any request that wrote
+  (`lib/gitlab/database/load_balancing/rack_middleware.rb`). On a hot path
+  this moves that user's reads from replicas to the primary, on top of
+  the writes.
+- Count writes per row per request, including existing writes in the same
+  action. A service that updates a row, followed by `current_user.update`
+  that saves the same row through `accepts_nested_attributes_for` or a
+  delegated attribute, is a redundant write. Compare the count with the
+  queries the description lists.
 - A new worker for the write sets `data_consistency`, `deduplicate`, and
   `defer_on_database_health_signal` for the tables it writes.
