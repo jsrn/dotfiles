@@ -1,8 +1,8 @@
 ---
 name: work-log
-description: Add an entry to my daily work log at ~/Desktop/work.md. Use at the start of a code review or re-review of an MR (as soon as the MR is known), after I finish other units of work in the session — posting review comments, opening or pushing to an MR, or picking up an issue or work item — and when I ask to "log this", "add to my work log", or "note this in work.md".
+description: Add an entry to my daily work log at ~/Desktop/work.md, and copy notable work to my brag document at ~/brag.md. Use at the start of a code review or re-review of an MR (as soon as the MR is known), after I finish other units of work in the session — posting review comments, opening or pushing to an MR, or picking up an issue or work item — and when I ask to "log this", "add to my work log", or "note this in work.md".
 argument-hint: "[code|review|other] [note]"
-allowed-tools: Read(~/Desktop/work.md), Edit(~/Desktop/work.md), Write(~/Desktop/work.md), Bash(date:*), Bash(glab mr view:*), Bash(glab issue view:*), Bash(glab orbit context:*)
+allowed-tools: Read(~/Desktop/work.md), Edit(~/Desktop/work.md), Write(~/Desktop/work.md), Read(~/brag.md), Edit(~/brag.md), Write(~/brag.md), Bash(date:*), Bash(glab mr view:*), Bash(glab issue view:*), Bash(glab orbit context:*)
 ---
 
 # Work log
@@ -69,7 +69,45 @@ Record what I did in `~/Desktop/work.md`, under today's date heading.
    `Opened` entry when I push to it later.
 6. Change only today's block. Never edit or reformat earlier days, or notes I
    have added.
-7. Tell me in one line what was logged.
+7. Decide if the work belongs in the brag document (see below). If it does,
+   add it to `~/brag.md`.
+8. Tell me in one line what was logged, and what went to `~/brag.md`.
+
+## Brag document
+
+`~/brag.md` collects work worth citing in my performance review. Copy only
+notable work there, not routine work. Most entries do not qualify.
+
+Copy work that has one of these:
+
+- Measurable impact: performance, reliability, cost, or scale improvements.
+- Fixes for incidents, security issues, data loss, or customer-reported bugs.
+- Large removal of risk or technical debt, or a hard problem solved.
+- A review that found a serious bug or design problem before merge.
+- Help or leadership outside my own work: unblocking another team,
+  mentoring, docs or tooling that others use, starting an initiative.
+- Anything else that seemed impressive.
+
+Do not copy: small refactors, routine reviews, spec-only changes, admin.
+
+Format:
+
+```markdown
+# Brag document
+
+## November 2026
+
+- 19th November: Opened [Archive webhook logs to object storage](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268201). Moves old webhook logs out of PostgreSQL, so the table stops growing without limit.
+```
+
+- One `## <full month> <year>` heading per month, oldest first. If the file
+  does not exist, create it with the `# Brag document` heading.
+- Entry: the date, the same link as the work log entry, then one sentence on
+  why it matters. Use only facts from the MR, issue, or this session. Do not
+  invent or inflate impact; if the impact is unknown, describe what the work
+  does.
+- If the same link is already in `~/brag.md`, do nothing.
+- Never edit or reformat existing entries.
 
 ## When not to log
 
