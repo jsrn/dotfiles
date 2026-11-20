@@ -103,3 +103,17 @@ doc wins. Use the doc's value and mention that this checklist is out of date.
 - Query comes from the code path actually executed (check `development.log`
   or the performance bar if in doubt).
 
+### Where and how often writes run
+
+- Find every caller of each new write (Orbit callers). A write reachable
+  from a GET, a page render, a helper, or a GraphQL query is a blocker
+  question, even with a `read_only?` guard
+  (`doc/development/database/verifying_database_capabilities.md`). Ask to
+  move it to an existing write request or a background job. Maintainers
+  have linked such writes to production incidents.
+- Estimate how many times each write runs: callers × request rate ×
+  affected users. A "once per user" write that runs on page load writes
+  for every active user right after the flag is enabled. Ask for a
+  percentage-of-actors rollout, and ask whether the write is needed at all.
+- A new worker for the write sets `data_consistency`, `deduplicate`, and
+  `defer_on_database_health_signal` for the tables it writes.
