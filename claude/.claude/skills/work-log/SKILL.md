@@ -90,6 +90,22 @@ Copy work that has one of these:
 
 Do not copy: small refactors, routine reviews, spec-only changes, admin.
 
+### Operating principles
+
+Tie each entry to the
+[GitLab operating principles](https://handbook.gitlab.com/handbook/company/operating-principles/)
+it shows. Tag it with the principle emoji, as the handbook asks:
+
+| Emoji | Principle | Shown by work that… |
+|---|---|---|
+| ⚡ | Speed with Quality | Ships fast with high quality, proves work on GitLab first (customer zero), automates with agents, removes bureaucracy. |
+| 🎯 | Ownership Mindset | Fixes a problem that was not mine ("never someone else's problem"), helps other teams, saves budget, people, or time. |
+| 🤝 | Customer Outcomes | Changes something for customers: fixes their bug, unblocks them, improves what they use. |
+
+Use only the principles the work clearly shows; one is enough. If the work
+shows none, it probably does not belong in the brag document. Culture of
+Excellence has no emoji; do not tag it.
+
 Format:
 
 ```markdown
@@ -97,13 +113,13 @@ Format:
 
 ## November 2026
 
-- 19th November: Opened [Archive webhook logs to object storage](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268201). Moves old webhook logs out of PostgreSQL, so the table stops growing without limit.
+- 19th November: Opened [Archive webhook logs to object storage](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268201). Moves old webhook logs out of PostgreSQL, so the table stops growing without limit. ⚡🎯
 ```
 
 - One `## <full month> <year>` heading per month, oldest first. If the file
   does not exist, create it with the `# Brag document` heading.
-- Entry: the date, the same link as the work log entry, then one sentence on
-  why it matters. Use only facts from the MR, issue, or this session. Do not
+- Entry: the date, the same link as the work log entry, one sentence on why
+  it matters, then the principle emoji. Use only facts from the MR, issue, or this session. Do not
   invent or inflate impact; if the impact is unknown, describe what the work
   does.
 - If the same link is already in `~/brag.md`, do nothing.
