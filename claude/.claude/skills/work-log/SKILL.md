@@ -16,6 +16,8 @@ Record what I did in `~/Desktop/work.md`, under today's date heading.
 
 - Code:
     - Picked up [Explore archiving webhook logs to object storage](https://gitlab.com/gitlab-org/gitlab/-/work_items/605238).
+    - Opened [Archive webhook logs to object storage](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268201).
+    - Updated [Add webhook retries](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/267980).
 - Review:
     - [Mark default webhook payloads with a signed body field](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268146).
 - Other:
@@ -49,7 +51,8 @@ Record what I did in `~/Desktop/work.md`, under today's date heading.
 | Work | Section | Entry |
 |---|---|---|
 | Started on an issue or work item | Code | `Picked up [Title](url).` |
-| Opened, pushed to, or fixed the pipeline of my own MR | Code | `[Title](url).` |
+| Opened my own MR | Code | `Opened [Title](url).` |
+| Pushed to, or fixed the pipeline of, my own existing MR | Code | `Updated [Title](url).` |
 | Reviewed, re-reviewed, or commented on someone else's MR | Review | `[Title](url).` |
 | Anything else (reading, meetings, admin, research) | Other | Plain sentence. |
 
@@ -62,7 +65,8 @@ Record what I did in `~/Desktop/work.md`, under today's date heading.
 4. Under today's heading, find or create the right section, keeping the
    `Code`, `Review`, `Other` order.
 5. If the same link is already in that section today, do nothing. Otherwise
-   append the entry at the end of the section.
+   append the entry at the end of the section. An MR opened today keeps its
+   `Opened` entry when I push to it later.
 6. Change only today's block. Never edit or reformat earlier days, or notes I
    have added.
 7. Tell me in one line what was logged.
