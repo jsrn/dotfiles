@@ -14,6 +14,10 @@ Arguments: an optional effort level for `code-review` (default `high`) and an
 optional MR. With no MR, use the current branch's MR. Follow the `glab` skill
 to resolve the MR and read its context.
 
+**Log the review first.** When you know the MR, and before you start the
+review, invoke the `work-log` skill to record a review of this MR. Do not
+wait until the review is complete.
+
 ## 0. Worktree (only when an MR is passed)
 
 Leave my current checkout untouched. If the MR's source branch is the branch

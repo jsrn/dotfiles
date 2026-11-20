@@ -12,6 +12,10 @@ earlier comment was dealt with properly.
 
 Follow the `glab` skill to resolve the MR and read its context.
 
+**Log the re-review first.** When you know the MR, and before you start the
+re-review, invoke the `work-log` skill to record a review of this MR. Do not
+wait until the re-review is complete.
+
 ## 1. Find my last round
 
 1. Get my username: `glab api user | jq -r .username`.

@@ -23,4 +23,7 @@
 
 # Work log
 
-When you finish a unit of work for me — a code review or re-review, posting MR comments, opening or pushing to an MR, or picking up an issue — invoke the `work-log` skill to record it in `~/Desktop/work.md`.
+Invoke the `work-log` skill to record my work in `~/Desktop/work.md`:
+
+- At the start of a code review or re-review, when you know the MR. Do not wait until the review is complete.
+- When you finish other units of work for me: posting MR comments, opening or pushing to an MR, or picking up an issue.

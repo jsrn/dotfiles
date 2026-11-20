@@ -1,6 +1,6 @@
 ---
 name: work-log
-description: Add an entry to my daily work log at ~/Desktop/work.md. Use after I finish a unit of work in the session — a code review or re-review of an MR, posting review comments, opening or pushing to an MR, or picking up an issue or work item — and when I ask to "log this", "add to my work log", or "note this in work.md".
+description: Add an entry to my daily work log at ~/Desktop/work.md. Use at the start of a code review or re-review of an MR (as soon as the MR is known), after I finish other units of work in the session — posting review comments, opening or pushing to an MR, or picking up an issue or work item — and when I ask to "log this", "add to my work log", or "note this in work.md".
 argument-hint: "[code|review|other] [note]"
 allowed-tools: Read(~/Desktop/work.md), Edit(~/Desktop/work.md), Write(~/Desktop/work.md), Bash(date:*), Bash(glab mr view:*), Bash(glab issue view:*), Bash(glab orbit context:*)
 ---

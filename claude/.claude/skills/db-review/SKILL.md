@@ -11,6 +11,11 @@ Review database changes the way a `@gl-database` reviewer would. Work only from
 evidence: the diff, the repo docs, the MR description, and the CI jobs. Never
 approve on assumption.
 
+**Log the review first.** When you know the MR, and before you start the
+review, invoke the `work-log` skill to record a review of this MR. Do not
+wait until the review is complete. If the target is the current branch and it
+has no MR, do not log.
+
 ## 1. Load context
 
 Always read these first (paths relative to the gitlab repo root):
