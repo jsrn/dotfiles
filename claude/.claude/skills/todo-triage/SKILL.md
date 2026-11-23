@@ -20,7 +20,9 @@ out=$(mktemp -d) && ~/.claude/skills/todo-triage/scripts/gather.sh "$out"
 This writes `$out/items.json`: one entry per target (several TODOs on the same
 MR or issue are grouped), with the triggering comments, labels, milestone,
 reviewer states, approvals, push history, my last note, my unresolved threads,
-my unsubmitted draft notes, and per-file `+/-` line counts.
+my unsubmitted draft notes, and per-file `+/-` line counts. A TODO on a
+group-level work item (an epic) has `context.group_work_item: true` and no
+other context: read it with `glab orbit context` before you categorise it.
 
 Read it with `jq` rather than dumping it whole. Only call `glab api` for more
 when the summary leaves a real question open, such as what a long thread
@@ -36,15 +38,19 @@ glab quirks, already handled in the script, to remember for ad-hoc calls:
 
 ### Taskwarrior
 
-```
-task project:work status:pending export
-```
+The script also writes `$out/tasks.json`: every pending task in `work` and its
+sub-projects, with `uuid`, `description`, `project`, `due`, `scheduled`,
+`priority`, `tags`, `annotations` and `urgency`, plus:
+- `links`: each GitLab MR or issue URL in the description or annotations, with
+  its `state` and `title`. `checked: false` means a group-level work item,
+  which the script cannot read; check it with `glab orbit context` if it matters.
+- `blocked`: true when the task depends on another pending task.
+- `await`: for a task tagged `+await`, the last `#note_` link is the anchor,
+  and `replies` lists the non-system notes by other people after it.
+  `anchor_found: false` means the note was not found on that item.
 
-This prints JSON for every pending task in `work` and its sub-projects, such
-as `work.reviews`. The filter has to come before `export`, because Taskwarrior
-3 reads an argument after `export` as a report name. Keep each task's `uuid`,
-`description`, `project`, `due`, `priority`, `tags`, `annotations` and
-`urgency`. Note any GitLab MR or issue URL in the description or annotations.
+Tags: `+await` (waiting for a reply), `+read`, `+watch` and `+quick`
+(low-effort work).
 
 ## 2. Assess each review request
 
@@ -82,12 +88,19 @@ docs-only.
 
 - **Linked to a GitLab item in `items.json`:** merge it into that item's row,
   and mention the task in **Why**. Its category follows the GitLab item.
-- **Linked to a GitLab item with no TODO:** check that item's state with
-  `glab api`. If the item is merged or closed, the task goes in **Mark done**.
+- **Linked to a GitLab item with no TODO:** use the link `state`. If the item
+  is merged or closed, the task goes in **Mark done**.
+- **`blocked`:** leave it out of the tables, and give the count and what
+  blocks it in the line under the report.
+- **`+await`:** if `replies` has a note from the person the task names, put the
+  task in **Act now**, say who replied and when, and offer it in **Mark done**.
+  A reply from someone else does not count, but mention it in **Why**. With no
+  reply, use the usual rules below; `scheduled` in the future is not overdue.
 - **Not linked:** put it in **Act now** if it's overdue, due today or
   `priority:H`. Put it in **Review today** if it's due within 2 working days or
   `priority:M`. Leave the rest out of the tables, and give their count in a
-  single line under the report.
+  single line under the report, with the count of `+read`, `+watch` and
+  `+quick` tasks among them.
 - Within a category, order tasks by `urgency`, highest first.
 
 ## 4. Categorise
