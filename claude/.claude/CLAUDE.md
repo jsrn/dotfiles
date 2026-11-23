@@ -23,7 +23,8 @@
   - Format: `<label> [decorations]: <subject>`, then an optional discussion.
   - Labels: `praise`, `nitpick`, `suggestion`, `issue`, `todo`, `question`, `thought`, `chore`, `note`, `typo`, `polish`, `quibble`.
   - Decorations: `(blocking)`, `(non-blocking)`, `(if-minor)`, or a topic such as `(security)`, `(performance)`, `(database)`.
-  - Map severity to a label and decoration. For example, a blocker is `issue (blocking):`, and a nit is `nitpick (non-blocking):`.
+  - Map severity to a label and decoration. For example, a blocker is `issue (blocking):`, and a nit is `nitpick:`. A nitpick is non-blocking by definition, so do not decorate it with `(non-blocking)`.
+  - To cite a documented rule in a comment, link the published page on `docs.gitlab.com`, not a repository file path. See the `glab` skill's posting rules.
 
 
 # Work log

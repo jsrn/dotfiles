@@ -113,8 +113,9 @@ Follow `.ai/code-review.md` severity layers. Output, in this order:
 
 Rules:
 
-- Cite the doc path for every blocker. Do not invent rules; if you cannot
-  find it in the docs, mark it as a question.
+- Cite the doc for every blocker. Do not invent rules; if you cannot
+  find it in the docs, mark it as a question. In comment drafts, link the
+  published page, per the `glab` skill's posting rules.
 - Ask for the author's Database Lab timing or plan rather than guessing
   production behaviour.
 - If a finding is disputed or subtle, offer to demonstrate it with

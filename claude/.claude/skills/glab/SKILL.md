@@ -80,6 +80,17 @@ not retry or trigger jobs unless asked.
 
 ## 4. Posting
 
+These rules apply to every comment draft, posted or not:
+
+- Write `nitpick:` with no decoration. A nitpick is non-blocking by definition.
+- To cite a documented rule, link the published page on `docs.gitlab.com`
+  with its section anchor, for example
+  `[Punctuation](https://docs.gitlab.com/development/documentation/styleguide/text_and_formatting/#punctuation)`.
+  Do not give a repository file path such as `doc/...` or `.ai/...`. Files
+  under `.ai/principles/distilled/` are not published: link the page that
+  states the rule, from the file's "Authoritative sources" list. Check that
+  the URL and the anchor exist before you use them.
+
 Never post, resolve, or edit anything on GitLab unless the user asks.
 
 When asked:
