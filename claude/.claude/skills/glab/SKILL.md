@@ -82,7 +82,9 @@ not retry or trigger jobs unless asked.
 
 These rules apply to every comment draft, posted or not:
 
-- Write `nitpick:` with no decoration. A nitpick is non-blocking by definition.
+- Put the Conventional Comments label, its decorations, and the colon in
+  bold: `**issue (blocking):**`, not `issue (blocking):`.
+- Write `**nitpick:**` with no decoration. A nitpick is non-blocking by definition.
 - To cite a documented rule, link the published page on `docs.gitlab.com`
   with its section anchor, for example
   `[Punctuation](https://docs.gitlab.com/development/documentation/styleguide/text_and_formatting/#punctuation)`.

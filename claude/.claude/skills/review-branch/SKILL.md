@@ -23,16 +23,15 @@ wait until the review is complete.
 Leave my current checkout untouched. If the MR's source branch is the branch
 already checked out here, skip this section and review in place.
 
-1. Check out the MR into a worktree:
-   `glab mr checkout <mr> --worktree .claude/worktrees/mr-<iid>` (add
-   `-R gitlab-org/security/gitlab` for security MRs). If the branch is
-   already checked out in another worktree, add `--branch review-mr-<iid>`.
-   Re-running on an existing path updates it.
-2. Symlink the main checkout's git-ignored GDK config into the worktree so
-   specs can run. These are every file listed by
-   `git status --ignored --porcelain config` in the main checkout
-   (`config/database.yml`, `config/gitlab.yml`, `config/redis.*.yml`, etc.):
-   `ln -s <main>/config/<file> <worktree>/config/<file>`.
+1. Run `scripts/review-worktree setup <iid>` from this skill's directory
+   (add `-R gitlab-org/security/gitlab` for security MRs). It checks the MR
+   out into `.claude/worktrees/mr-<iid>` with `glab mr checkout`, using
+   `--branch review-mr-<iid>` when the source branch is checked out
+   elsewhere. It then symlinks the main checkout's git-ignored GDK config
+   (`config/database.yml`, `config/gitlab.yml`, `config/redis.*.yml`, etc.)
+   so specs can run. Re-running it updates the worktree.
+2. Report any `WARNING` line it prints: a `HEAD` that is not the MR's
+   `head_sha`, or a change to `db/structure.sql`.
 3. Switch the session into it with `EnterWorktree` (`path`), and run every
    later step from there.
 
@@ -172,9 +171,11 @@ Do not post anything to GitLab unless I ask; then follow the `glab` skill's
 posting rules. List any `poc_*_spec.rb` files created so I can clean them up.
 
 If you created a worktree, stay in it until I'm done, then return with
-`ExitWorktree` (`keep`) and give me the cleanup command:
-`git worktree remove --force .claude/worktrees/mr-<iid>` (`--force` because
-of the config symlinks and PoC specs). Never remove it yourself unasked.
+`ExitWorktree` (`keep`) and give me the cleanup command, with the script's
+full path: `<skill-dir>/scripts/review-worktree teardown <iid>`. It
+removes the worktree and the local branch that setup created. It refuses,
+and lists the files, while PoC specs or other changes would be lost; add
+`--yes` to remove them anyway. Never remove it yourself unasked.
 
 ## 6. Security branches
 

@@ -20,7 +20,7 @@
 
 - When running code reviews, e.g. through the `code-review` skill, always read the work item associated with the MR to confirm that the MR solves the stated problem.
 - Write all MR review comments with Conventional Comments (https://conventionalcomments.org/). This applies to all review skills (`code-review`, `review-branch`, `re-review`, `db-review`), to comments that you post, and to comment drafts that you give me.
-  - Format: `<label> [decorations]: <subject>`, then an optional discussion.
+  - Format: `**<label> [decorations]:** <subject>`, then an optional discussion. Put the label, its decorations, and the colon in bold, for example `**suggestion (non-blocking):**` or `**nitpick:**`.
   - Labels: `praise`, `nitpick`, `suggestion`, `issue`, `todo`, `question`, `thought`, `chore`, `note`, `typo`, `polish`, `quibble`.
   - Decorations: `(blocking)`, `(non-blocking)`, `(if-minor)`, or a topic such as `(security)`, `(performance)`, `(database)`.
   - Map severity to a label and decoration. For example, a blocker is `issue (blocking):`, and a nit is `nitpick:`. A nitpick is non-blocking by definition, so do not decorate it with `(non-blocking)`.
