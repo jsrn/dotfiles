@@ -83,10 +83,44 @@ mr_context() {
     }'
 }
 
+# Group-level work items (epics) have no REST issues endpoint. Read them through GraphQL, in the
+# REST shape: {title, state, labels, assignees, notes}, with notes oldest first. Fails if unreadable.
+group_work_item() {
+  local full=${1#groups/} iid=$2 after="" page
+  local q='query($fullPath: ID!, $iid: String!, $after: String) { namespace(fullPath: $fullPath) { workItem(iid: $iid) {
+    title state widgets {
+      ... on WorkItemWidgetLabels { labels { nodes { title } } }
+      ... on WorkItemWidgetAssignees { assignees { nodes { username } } }
+      ... on WorkItemWidgetNotes { discussions(first: 100, after: $after) { pageInfo { hasNextPage endCursor }
+        nodes { notes { nodes { id system body createdAt author { username } } } } } } } } } }'
+  : > "$out/gwi.jsonl"
+  while :; do
+    local args=(-f query="$q" -f fullPath="$full" -f iid="$iid")
+    [[ -n $after ]] && args+=(-f after="$after")
+    page=$(glab api graphql "${args[@]}" 2>/dev/null) || return 1
+    jq -e '.data.namespace.workItem' >/dev/null <<<"$page" || return 1
+    echo "$page" >> "$out/gwi.jsonl"
+    page=$(jq -c '.data.namespace.workItem.widgets[] | .discussions? // empty | .pageInfo' <<<"$page")
+    [[ $(jq .hasNextPage <<<"$page") == true ]] || break
+    after=$(jq -r .endCursor <<<"$page")
+  done
+  jq -s '(.[0].data.namespace.workItem) as $w | {
+      title: $w.title, state: ($w.state | ascii_downcase | if . == "open" then "opened" else . end),
+      labels: [$w.widgets[] | .labels?.nodes[]?.title], assignees: [$w.widgets[] | .assignees?.nodes[]? | {username}],
+      notes: ([.[].data.namespace.workItem.widgets[] | .discussions?.nodes[]?.notes.nodes[]
+               | {id: (.id | sub(".*/"; "") | tonumber? // .), system, body, created_at: .createdAt, author}]
+              | sort_by(.created_at))
+    }' "$out/gwi.jsonl"
+}
+
 issue_context() {
   local p=$1 iid=$2 issue=$3 notes
-  # The request-for-help project 404s on issues/:iid, but notes work for every project.
-  notes=$(glab api --paginate "projects/$p/issues/$iid/notes?sort=desc&per_page=50" | jq -s 'add // []')
+  if [[ $p == groups%2F* ]]; then
+    notes=$(jq '.notes | reverse' <<<"$issue")
+  else
+    # The request-for-help project 404s on issues/:iid, but notes work for every project.
+    notes=$(glab api --paginate "projects/$p/issues/$iid/notes?sort=desc&per_page=50" | jq -s 'add // []')
+  fi
   jq -n --argjson notes "$notes" --argjson issue "$issue" --arg me "$me" '{
       labels: $issue.labels, assignees: [($issue.assignees // [])[].username],
       recent_notes: [$notes[] | select(.system | not)][:6] | map({author: .author.username, at: .created_at[0:16], body: .body[0:500]}),
@@ -100,12 +134,11 @@ jq -c '.[]' "$out/targets.json" | while read -r t; do
   has_todos=$(jq '.todos | length > 0' <<<"$t")
   p=$(enc "$path")
 
-  # Group-level work items (epics) have no REST issues endpoint; read them separately.
   if [[ $path == groups/* ]]; then
-    jq '. + {context: {group_work_item: true}}' <<<"$t"; continue
-  fi
-
-  if [[ $type == MergeRequest ]]; then
+    if ! obj=$(group_work_item "$path" "$iid"); then
+      jq '. + {context: {group_work_item: true}}' <<<"$t"; continue
+    fi
+  elif [[ $type == MergeRequest ]]; then
     obj=$(api_or '{}' "projects/$p/merge_requests/$iid")
   else
     obj=$(api_or '{}' "projects/$p/issues/$iid")
@@ -132,7 +165,11 @@ replies_after() {
   rest=${url#https://gitlab.com/}; path=${rest%%/-/*}; kind=$(cut -d/ -f1 <<<"${rest#*/-/}")
   iid=${url%%#*}; iid=${iid##*/}; anchor=${url##*#note_}
   [[ $kind == merge_requests ]] && ep=merge_requests
-  api_or '[]' --paginate "projects/$(enc "$path")/$ep/$iid/notes?sort=asc&order_by=created_at&per_page=100" |
+  if [[ $path == groups/* ]]; then
+    { group_work_item "$path" "$iid" || echo '{"notes": []}'; } | jq '.notes'
+  else
+    api_or '[]' --paginate "projects/$(enc "$path")/$ep/$iid/notes?sort=asc&order_by=created_at&per_page=100"
+  fi |
     jq --arg me "$me" --argjson anchor "$anchor" '
       (map(select(.id == $anchor)) | first | .created_at) as $at |
       if $at == null then {anchor_found: false, replies: []}
@@ -151,12 +188,12 @@ done | jq -s 'add // {}' > "$out/await.json"
 jq --slurpfile items "$out/items.json" --slurpfile aw "$out/await.json" '
   def parse: capture("^https://gitlab\\.com/(?<path>.+?)/-/(?<kind>merge_requests|issues|work_items)/(?<iid>[0-9]+)")
              | "\(if .kind == "merge_requests" then "MergeRequest" else "Issue" end):\(.path):\(.iid)";
-  ($items[0].items | map({key, value: {target: .url, state, title, checked: (.path | startswith("groups/") | not)}}) | from_entries) as $s |
+  ($items[0].items | map({key, value: {target: .url, state, title, checked: ((.context // {}).group_work_item != true)}}) | from_entries) as $s |
   map(.uuid as $id | . + {
       links: [.links[] | {url: .} + ($s[parse] // {})],
       await: ($aw[0][$id] // null)})
 ' "$out/tasks.json" > "$out/tasks.json.tmp" && mv "$out/tasks.json.tmp" "$out/tasks.json"
 
-rm -f "$out/disc.json" "$out/tasks_raw.json" "$out/targets.json" "$out/await.json"
+rm -f "$out/disc.json" "$out/gwi.jsonl" "$out/tasks_raw.json" "$out/targets.json" "$out/await.json"
 jq -r '"\(.me): \(.items | length) items (\([.items[] | select(.todos | length > 0)] | length) with TODOs), \([.items[].todos[]] | length) todos -> '"$out"'/items.json"' "$out/items.json"
 jq -r '"\(length) work tasks (\([.[] | select(.blocked)] | length) blocked, \([.[] | select(.await)] | length) awaiting a reply) -> '"$out"'/tasks.json"' "$out/tasks.json"

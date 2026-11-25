@@ -29,8 +29,9 @@ milestone, reviewer states (`i_am_reviewer`), approvals, push history, my last
 note, my unresolved threads, my unsubmitted draft notes, and per-file `+/-`
 line counts. Two special cases:
 - `context: null`: a task-only target that is merged or closed.
-- `context.group_work_item: true`: a group-level work item (an epic). The
-  script cannot read it, so read it with `glab orbit context` when it matters.
+- `context.group_work_item: true`: a group-level work item (an epic) that the
+  script could not read through GraphQL. Read it with `glab orbit context`
+  when it matters. The script reads other epics like issues.
 
 Read it with `jq` rather than dumping it whole. Only call `glab api` for more
 when the summary leaves a real question open, such as what a long thread
@@ -51,7 +52,7 @@ sub-projects, with `uuid`, `description`, `project`, `due`, `scheduled`,
 `priority`, `tags`, `annotations` and `urgency`, plus:
 - `links`: each GitLab MR or issue URL in the description or annotations, with
   its `target` (the `items.json` url), `state` and `title`. `checked: false`
-  means a group-level work item.
+  means a group-level work item that the script could not read.
 - `blocked`: true when the task depends on another pending task.
 - `await`: for a task tagged `+await`, the last `#note_` link is the anchor,
   and `replies` lists the non-system notes by other people after it.
