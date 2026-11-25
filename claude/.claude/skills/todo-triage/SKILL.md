@@ -208,3 +208,16 @@ several tasks at once, and short ids change as tasks are completed. For a kept
 item from step 4 that I confirm, mark its TODOs done as in step 4.
 
 Report what was marked done and what was kept.
+
+## 8. Daily update, in the morning only
+
+I run this triage at different times of the day. Do this step only when both
+of these are true:
+- `date '+%H'` is less than 12.
+- `cat ~/.local/state/daily-update/last` does not show today's date. (If the
+  file does not exist, this is true.)
+
+If both are true, use the `daily-update` skill to draft my post for the daily
+update thread. Use the categories from step 5, after step 7, as its source of
+today's priorities. If one or both are false, do not do this step and do not
+mention it.
